@@ -11,7 +11,7 @@ private:
 public:
 	BMException(const string& message):err_message(message){}
 	BMException();
-	~BMException();
+	~BMException() {};
 	void show() { cout << err_message << endl; }
 };
 
@@ -31,7 +31,7 @@ public:
 	BufferManager();
 	~BufferManager();
 	Block FetchBlock(const string& name, int offset);
-	void WriteBlock(const string& name, int offset, Block b);
+	void WriteBlock(const string& name, int offset, Byte* b);
 	void SetPin(int index);
 	void ResetPin(int index);
 	void CreateFile(const string& name);

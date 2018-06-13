@@ -1,4 +1,8 @@
+#include "stdafx.h"
 #include "BufferManager.h"
+#include "mDef.h"
+
+#pragma warning(disable : 4996)
 
 void InitBlock(Block& block);
 
@@ -12,7 +16,6 @@ BufferManager::BufferManager()
 	}
 	this->current_file_name = "";
 	this->opening_a_file = false;
-	sub_que.push_back(-1);
 }
 
 BufferManager::~BufferManager()
@@ -61,7 +64,7 @@ Block BufferManager::FetchBlock(const string& name, int offset)
 	}
 	//Step 2: Read the block from the file.
 	Byte temp[BLOCK_SIZE];
-	fseek(fp, offset / BLOCK_SIZE, SEEK_SET);
+	fseek(fp, offset, SEEK_SET);
 	fread(&temp, 1, BLOCK_SIZE, fp);
 	//Step 3: Put it to the buffer.
 	int index = substitute(temp, name, offset);
@@ -69,7 +72,7 @@ Block BufferManager::FetchBlock(const string& name, int offset)
 	return buffer[index];
 }
 
-void BufferManager::WriteBlock(const string & name, int offset, Block b)
+void BufferManager::WriteBlock(const string & name, int offset, Byte* b)
 {
 	if (name.size() > MAX_FILENAME_LENGTH)
 	{
@@ -78,15 +81,17 @@ void BufferManager::WriteBlock(const string & name, int offset, Block b)
 	//If this block is already in, just overwrite it.
 	for (int i = 0; i < BUFFER_SIZE; i++)
 	{
-		if (hit(b, buffer[i]))
+		if (hit(name,offset,buffer[i]))
 		{
-			buffer[i] = b;
+			memcpy(&buffer[i], b, BLOCK_SIZE);
+			buffer[i].tag = offset;
 			buffer[i].dirty = true;
 			return;
 		}
 	}
 	//If not, substitute one using LRU
-	int i = substitute(b.content, b.file_name, b.tag);
+	int i = substitute(b, name, offset);
+	buffer[i].dirty = 1;
 	return;
 }
 
