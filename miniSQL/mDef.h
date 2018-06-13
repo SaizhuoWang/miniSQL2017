@@ -7,13 +7,6 @@
 
 typedef unsigned char Byte;
 
-class ListNode
-{
-public:
-	int value;
-	ListNode *prev, *next;
-};
-
 class Block
 {
 public:
