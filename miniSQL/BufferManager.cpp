@@ -6,18 +6,18 @@
 
 BufferManager::BufferManager()
 {
-	buffer = new Block[BUFFER_SIZE];
-	for (int i = 0; i < BUFFER_SIZE; i++)
+	buffer = new Block[BUFFER_SIZE];//Create the space for buffer
+	for (int i = 0; i < BUFFER_SIZE; i++)//Initialize the substitution table.
 	{
 		sub_que.push_back(i);
 	}
-	this->current_file_name = "";
-	this->opening_a_file = false;
+	this->current_file_name = "";//Init table name.
+	this->opening_a_file = false;//Init opening state.
 }
 
 BufferManager::~BufferManager()
 {
-	for (int i = 0; i < BUFFER_SIZE; i++)
+	for (int i = 0; i < BUFFER_SIZE; i++)//Test if there's need to write back before deconstruction.
 	{
 		if (buffer[i].dirty)
 			WriteToDisk(buffer[i]);
@@ -27,11 +27,13 @@ BufferManager::~BufferManager()
 
 bool BufferManager::hit(const string& name, int offset, const Block& b)
 {
+	//Return true if both name and address match.
 	return (!strcmp(name.c_str(), b.file_name) && (b.tag/BLOCK_SIZE == offset/BLOCK_SIZE));
 }
 
 Block BufferManager::FetchBlock(const string& name, int offset)
 {
+	//File name exceeding limit will lead to exception.
 	if (name.size() > MAX_FILENAME_LENGTH)
 	{
 		throw BMException("File name exceeds limit!");
@@ -78,7 +80,7 @@ void BufferManager::WriteBlock(const Block& b)
 	}
 	//If not, substitute one using LRU
 	int i = substitute(b.content, b.file_name, b.tag);
-	buffer[i].dirty = 1;
+	buffer[i].dirty = true;
 	return;
 }
 
@@ -94,8 +96,10 @@ void BufferManager::ResetPin(int index)
 
 void BufferManager::CreateFile(const string & name)
 {
+	//Test if file name exceeds limit.
 	if (name.size() > MAX_FILENAME_LENGTH)
 		throw BMException("File name exceeds length limit!");
+	//Create a file
 	opening_a_file = true;
 	current_file_name = name;
 	fp = fopen(name.c_str(), "w");
@@ -104,6 +108,7 @@ void BufferManager::CreateFile(const string & name)
 
 void BufferManager::DeleteFile(const string & name)
 {
+	//Test if file name exceeds limit.
 	if (name.size() > MAX_FILENAME_LENGTH)
 		throw BMException("File name exceeds length limit!");
 	remove(name.c_str());
