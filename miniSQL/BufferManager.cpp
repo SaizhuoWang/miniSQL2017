@@ -4,14 +4,11 @@
 
 #pragma warning(disable : 4996)
 
-void InitBlock(Block& block);
-
 BufferManager::BufferManager()
 {
 	buffer = new Block[BUFFER_SIZE];
 	for (int i = 0; i < BUFFER_SIZE; i++)
 	{
-		InitBlock(buffer[i]);
 		sub_que.push_back(i);
 	}
 	this->current_file_name = "";
@@ -28,14 +25,9 @@ BufferManager::~BufferManager()
 	delete[] buffer;
 }
 
-bool BufferManager::hit(const string& name, int offset, Block b)
+bool BufferManager::hit(const string& name, int offset, const Block& b)
 {
-	return (!strcmp(name.c_str(), b.file_name) && (b.tag == offset));
-}
-
-bool BufferManager::hit(const Block & b1, const Block & b2)
-{
-	return (b1.file_name == b2.file_name&&b1.tag / BLOCK_SIZE == b2.tag / BLOCK_SIZE);
+	return (!strcmp(name.c_str(), b.file_name) && (b.tag/BLOCK_SIZE == offset/BLOCK_SIZE));
 }
 
 Block BufferManager::FetchBlock(const string& name, int offset)
@@ -72,25 +64,20 @@ Block BufferManager::FetchBlock(const string& name, int offset)
 	return buffer[index];
 }
 
-void BufferManager::WriteBlock(const string & name, int offset, Byte* b)
+void BufferManager::WriteBlock(const Block& b)
 {
-	if (name.size() > MAX_FILENAME_LENGTH)
-	{
-		throw BMException("File name exceeds limit!");
-	}
 	//If this block is already in, just overwrite it.
 	for (int i = 0; i < BUFFER_SIZE; i++)
 	{
-		if (hit(name,offset,buffer[i]))
+		if (hit(b.file_name,b.tag,buffer[i]))
 		{
-			memcpy(&buffer[i], b, BLOCK_SIZE);
-			buffer[i].tag = offset;
+			buffer[i] = b;
 			buffer[i].dirty = true;
 			return;
 		}
 	}
 	//If not, substitute one using LRU
-	int i = substitute(b, name, offset);
+	int i = substitute(b.content, b.file_name, b.tag);
 	buffer[i].dirty = 1;
 	return;
 }
@@ -165,13 +152,4 @@ void BufferManager::WriteToDisk(const Block & b)
 	fseek(fp, b.tag / BLOCK_SIZE, SEEK_SET);
 	fwrite(b.content, 1, BLOCK_SIZE, fp);
 	return;
-}
-
-void InitBlock(Block& block)
-{
-	memset(block.content, 0, BLOCK_SIZE);
-	block.file_name = new char[MAX_FILENAME_LENGTH];
-	block.dirty = false;
-	block.tag = -1;
-	block.pin = false;
 }

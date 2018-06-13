@@ -10,6 +10,7 @@ typedef unsigned char Byte;
 class Block
 {
 public:
+	Block();
 	Byte content[BLOCK_SIZE];
 	bool dirty;
 	char* file_name;
