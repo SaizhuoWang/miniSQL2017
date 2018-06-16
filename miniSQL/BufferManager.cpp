@@ -57,11 +57,15 @@ Block BufferManager::FetchBlock(const string& name, int offset)
 		opening_a_file = true;
 	}
 	//Step 2: Read the block from the file.
-	Byte temp[BLOCK_SIZE];
-	fseek(fp, offset, SEEK_SET);
-	fread(&temp, 1, BLOCK_SIZE, fp);
+	Block temp;
+	fseek(fp, (offset / BLOCK_SIZE)*BLOCK_A_SIZE, SEEK_SET);
+	fread(&temp.byte_used, sizeof(int), 1, fp);
+	fseek(fp, sizeof(int), SEEK_CUR);
+	fread(temp.content, 1, BLOCK_SIZE, fp);
+	strcpy(temp.file_name, name.c_str());
+	temp.tag = offset;
 	//Step 3: Put it to the buffer.
-	int index = substitute(temp, name, offset);
+	int index = substitute(temp);
 	//Step 4: Return it.
 	return buffer[index];
 }
@@ -79,7 +83,7 @@ void BufferManager::WriteBlock(const Block& b)
 		}
 	}
 	//If not, substitute one using LRU
-	int i = substitute(b.content, b.file_name, b.tag);
+	int i = substitute(b);
 	buffer[i].dirty = true;
 	return;
 }
@@ -119,7 +123,7 @@ void BufferManager::DeleteFile(const string & name)
 @param const Byte*: the Block content
 @return value: the index in buffer of the newly arranged block
 */
-int BufferManager::substitute(const Byte * b, const string& name, int offset)
+int BufferManager::substitute(const Block& b)
 {
 	int it = 0, pos = sub_que.front();
 	//First we check if there's room available using LRU.
@@ -139,11 +143,8 @@ int BufferManager::substitute(const Byte * b, const string& name, int offset)
 	if (buffer[pos].dirty)
 		WriteToDisk(buffer[pos]);
 	//Substitute the old block with the new one.
-	memcpy(buffer[pos].content, b, BLOCK_SIZE);
-	strcpy(buffer[pos].file_name, name.c_str());
-	buffer[pos].dirty = false;
-	buffer[pos].pin = false;
-	buffer[pos].tag = offset;
+	buffer[pos] = b;
+
 	sub_que.pop_front();
 	sub_que.push_back(pos);
 	return pos;
@@ -154,7 +155,46 @@ void BufferManager::WriteToDisk(const Block & b)
 	fp = fopen(b.file_name, "r+");
 	current_file_name = b.file_name;
 	opening_a_file = true;
-	fseek(fp, b.tag / BLOCK_SIZE, SEEK_SET);
+	fseek(fp, (b.tag / BLOCK_SIZE)*BLOCK_A_SIZE, SEEK_SET);
+	fwrite(&b.byte_used,sizeof(int),1,fp);
+	fseek(fp, sizeof(int), SEEK_CUR);
 	fwrite(b.content, 1, BLOCK_SIZE, fp);
 	return;
+}
+
+void BufferManager::AppendRecord(const string & name, int offset, Byte * src, int length)
+{
+	int i, index;
+	for (i = 0; i < BUFFER_SIZE; i++)
+	{
+		if (hit(name, offset, buffer[i])) break;
+	}
+	if (i == BUFFER_SIZE)
+	{
+		if (current_file_name != name || !opening_a_file)
+		{
+			fp = fopen(name.c_str(), "r+");
+			current_file_name = name;
+			opening_a_file = true;
+		}
+		//Step 2: Read the block from the file.
+		Block temp;
+		fseek(fp, (offset / BLOCK_SIZE)*BLOCK_A_SIZE, SEEK_SET);
+		fread(&temp.byte_used, sizeof(int), 1, fp);
+		fseek(fp, sizeof(int), SEEK_CUR);
+		fread(temp.content, 1, BLOCK_SIZE, fp);
+		strcpy(temp.file_name, name.c_str());
+		temp.tag = offset;
+		//Step 3: Put it to the buffer.
+		index = substitute(temp);
+	}
+	else
+	{
+		index = i;
+	}
+	if (buffer[index].byte_used + length > BLOCK_SIZE)
+		throw(BMException("Block out of space!"));
+	buffer[index].dirty = true;
+	memcpy(buffer[index].content + buffer[index].byte_used, src, length);
+	buffer[index].byte_used += length;
 }

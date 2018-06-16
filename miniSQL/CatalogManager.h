@@ -18,6 +18,7 @@ private:
 	BufferManager & bm;
 	vector<Table> tables;
 	vector<Index> indices;
+	Byte* WriteAttribute(Byte* dest, const Attribute& a);
 public:
 	CatalogManager(BufferManager& bfm) :bm(bfm) {};
 	CatalogManager();
