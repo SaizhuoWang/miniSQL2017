@@ -47,7 +47,7 @@ private:
 		@param int offset: The byte offset of the content.
 		@return int: The index of the newly put block in the buffer.
 	*/
-	int substitute(const Byte* b,const string& name, int offset);
+	int substitute(const Block& b);
 
 	/*
 		This funtion carries out the work of writing a block into the disk.
@@ -89,11 +89,15 @@ public:
 		@param const Block& b: The block to be written.
 	*/
 	void WriteBlock(const Block& b);
+
+	void AppendRecord(const string& name, int offset, Byte* src, int length);
+
 	/*
 		Pin and unpin a block
 	*/
 	void SetPin(int index);
 	void ResetPin(int index);
+
 	/*
 		Create and delete a file.
 	*/
