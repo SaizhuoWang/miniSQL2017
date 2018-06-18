@@ -13,13 +13,14 @@ Interpreter::~Interpreter()
 
 template <class T>
 void Interpreter::read(T& rin)
-{
-	getline(rin, s);
+{   
+	s.clear();
 	string temp;
-	while (s[s.length() - 1] != ';') {
-		getline(rin,temp);
-		s = s + temp;
-	}
+	while (temp[temp.length() - 1] != ';') 
+	{
+		rin >> temp;
+		s = s + temp + " ";		
+	} 
 }
 
 string Interpreter::gword(string& s,const string& mark)

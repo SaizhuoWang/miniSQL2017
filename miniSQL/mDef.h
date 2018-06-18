@@ -23,10 +23,25 @@ public:
 	bool is_unique;
 	//length saves the length of attribute if it is char, else it is -1
 	int length;
+	//************************************************//
+	//int type;
+	//0 for 'int', 1 for 'float', -n for 'char(n)'
+	//bool primary;
+	//***********************************************//
 	Attribute();
 	Attribute(Type ty, string name, bool unique) :type(ty), name(name), is_unique(unique) {};
 	Attribute(Type ty, string name, bool unique, int length) :
 		type(ty), name(name), is_unique(unique), length(length) {};
+};
+
+class Restriction {
+public:
+	Restriction();
+	int aname;
+	//its index
+	int op;
+	//0 for '=', 1 for '<>', 2 for '<', 3 for '>', 4 for '<=', 5 for '>=
+	string value;
 };
 
 class Index

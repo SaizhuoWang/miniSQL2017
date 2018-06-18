@@ -27,3 +27,8 @@ Block::Block(const string & s):byte_used(s.size()),dirty(false),tag(-1),pin(fals
 	memcpy(content, s.c_str(), s.size());
 	file_name = new char[MAX_FILENAME_LENGTH];
 }
+
+Restriction::Restriction():aname(0),op(0)
+{
+
+}
