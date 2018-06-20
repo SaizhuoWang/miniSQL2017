@@ -106,7 +106,7 @@ void BufferManager::CreateFile(const string & name)
 	//Create a file
 	opening_a_file = true;
 	current_file_name = name;
-	fp = fopen(name.c_str(), "w");
+	fp = fopen(name.c_str(), "a+");
 	return;
 }
 
@@ -119,6 +119,20 @@ void BufferManager::DeleteFile(const string & name)
 	return;
 }
 
+int BufferManager::FileSize(const string & filename)
+{
+	if (filename != current_file_name)
+	{
+		current_file_name = filename;
+		opening_a_file = true;
+		fp = fopen(current_file_name.c_str(), "a+");
+	}
+	int length;
+	fseek(fp, 0, SEEK_END);
+	length = (int)ftell(fp);
+	return length;
+}
+
 /*This function puts a block into the buffer. It does the substitution work if the block is full.
 @param const Byte*: the Block content
 @return value: the index in buffer of the newly arranged block
@@ -127,7 +141,7 @@ int BufferManager::substitute(const Block& b)
 {
 	int it = 0, pos = sub_que.front();
 	//First we check if there's room available using LRU.
-	while (it < sub_que.size() && buffer[pos].pin)
+	while (it < (int)sub_que.size() && buffer[pos].pin)
 	{
 		sub_que.pop_front();
 		sub_que.push_back(pos);

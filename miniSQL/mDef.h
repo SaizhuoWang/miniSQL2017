@@ -1,8 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-
-
 using namespace std;
 
 #define BLOCK_SIZE 4096
@@ -13,25 +11,16 @@ using namespace std;
 
 typedef unsigned char Byte;
 
-enum Type{INT, REAL, CHAR};
-
 class Attribute
 {
 public:
-	Type type;
-	string name;
-	bool is_unique;
-	//length saves the length of attribute if it is char, else it is -1
-	int length;
-	//************************************************//
-	//int type;
-	//0 for 'int', 1 for 'float', -n for 'char(n)'
-	//bool primary;
-	//***********************************************//
-	Attribute();
-	Attribute(Type ty, string name, bool unique) :type(ty), name(name), is_unique(unique) {};
-	Attribute(Type ty, string name, bool unique, int length) :
-		type(ty), name(name), is_unique(unique), length(length) {};
+	int type;//0 for int, 1 for float, -n for char(n)
+	string name;//The name of this attribute
+	bool primary;
+	bool unique;
+	Attribute() {};
+	Attribute(int ty, string name, bool unique, bool primary) :
+		type(ty), name(name), unique(unique), primary(primary) {};
 };
 
 class Restriction {
@@ -47,7 +36,7 @@ public:
 class Index
 {
 public:
-	Index();
+	Index() {};
 	Index(const string& iname, const string& tname, const Attribute& attr) :
 		name(iname), table_name(tname), attr(attr) {};
 	string table_name, name;
@@ -57,8 +46,12 @@ public:
 class Table
 {
 public:
+	Table(const string& name, int pki, const vector<Attribute>& attrs) :
+		name(name), primary_key_index(pki), attributes(attrs) {};
+	Table() {};
 	string name;
-	vector<Attribute> attributes, primary_key;
+	int primary_key_index;
+	vector<Attribute> attributes;
 	vector<Index> indices;
 };
 
