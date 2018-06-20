@@ -1,8 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-
-
 using namespace std;
 
 #define BLOCK_SIZE 4096
@@ -18,20 +16,13 @@ enum Type{INT, REAL, CHAR};
 class Attribute
 {
 public:
-	Type type;
 	string name;
 	bool is_unique;
-	//length saves the length of attribute if it is char, else it is -1
-	int length;
-	//************************************************//
-	//int type;
+	int type;
 	//0 for 'int', 1 for 'float', -n for 'char(n)'
-	//bool primary;
-	//***********************************************//
+	bool primary;
 	Attribute();
 	Attribute(Type ty, string name, bool unique) :type(ty), name(name), is_unique(unique) {};
-	Attribute(Type ty, string name, bool unique, int length) :
-		type(ty), name(name), is_unique(unique), length(length) {};
 };
 
 class Restriction {
