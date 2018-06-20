@@ -14,13 +14,13 @@ typedef unsigned char Byte;
 class Attribute
 {
 public:
-	int type;//0 for int, 1 for float, -n for char(n)
-	string name;//The name of this attribute
+	string name;
+	bool is_unique;
+	int type;
+	//0 for 'int', 1 for 'float', -n for 'char(n)'
 	bool primary;
-	bool unique;
-	Attribute() {};
-	Attribute(int ty, string name, bool unique, bool primary) :
-		type(ty), name(name), unique(unique), primary(primary) {};
+	Attribute();
+	Attribute(Type ty, string name, bool unique) :type(ty), name(name), is_unique(unique) {};
 };
 
 class Restriction {

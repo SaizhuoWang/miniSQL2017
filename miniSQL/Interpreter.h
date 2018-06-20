@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafx.h"
+
 #include "mDef.h"
 
 using namespace std;
@@ -21,7 +21,7 @@ public:
 	void read(T& rin);
 
 	string gword(string& s,const string& mark);
-	bool ctype(int t,const string& s);
+	bool ctype(int t,string& s);
 	int check_attr(const vector<Attribute>* ta, const string& iname);
 
 private:

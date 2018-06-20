@@ -30,7 +30,7 @@ string Interpreter::gword(string& s,const string& mark)
 	return t;
 }
 
-bool Interpreter::ctype(int t,const string& s)
+bool Interpreter::ctype(int t,string& s)
 {   
 	int stype = 0;
 	if (s.find("\"") != string::npos)stype = -(s.length() - 2);
@@ -41,7 +41,11 @@ bool Interpreter::ctype(int t,const string& s)
 		if (stype == t)return true;
 		else return false;
 	else
-		if (stype >= t)return true;
+		if (stype >= t) {
+			int offset = stype - t;
+			while (offset--)s = s + " ";
+			return true;
+		}
 		else return false;
 }
 
@@ -157,7 +161,7 @@ bool Interpreter::syntax()
 		if (s.find("(") == string::npos || s.find(")") == string::npos)
 		{cout << "'(' or ')' is absent" << endl;return 0;}
 		s.erase(0, s.find_first_of("(") + 1);
-		vector<string> val;
+		string val;
 		int over = 0;int index = 0;
 		while (1) {
 			if (over)
@@ -172,7 +176,7 @@ bool Interpreter::syntax()
 			va = s.substr(0, s.find_first_of(")"));over = 1;
 			}
 			
-			if(ctype((*ta)[index++].type,va)){ val.push_back(va);continue; }
+			if(ctype((*ta)[index++].type,va)){ val = val + va;continue; }
 			else { cout << "The value " << va << " is not in correct type" << endl;return 0; }
 
 		}
