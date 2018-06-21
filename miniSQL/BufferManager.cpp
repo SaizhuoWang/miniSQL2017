@@ -31,7 +31,7 @@ bool BufferManager::hit(const string& name, int offset, const Block& b)
 	return (!strcmp(name.c_str(), b.file_name) && (b.tag/BLOCK_SIZE == offset/BLOCK_SIZE));
 }
 
-Block BufferManager::FetchBlock(const string& name, int offset)
+Block* BufferManager::FetchBlock(const string& name, int offset)
 {
 	//File name exceeding limit will lead to exception.
 	if (name.size() > MAX_FILENAME_LENGTH)
@@ -45,19 +45,20 @@ Block BufferManager::FetchBlock(const string& name, int offset)
 		{
 			sub_que.pop_front();
 			sub_que.push_back(i);
-			return buffer[i];
+			return &buffer[i];
 		}
 	}
 	/*If not hit, fetch this block from the disk.*/
 	//Step 1: Set the file pointer to the file we want.
 	if (current_file_name != name || !opening_a_file)
 	{
-		fp = fopen(name.c_str(), "r+");
+		fp = fopen(name.c_str(), "ab+");
 		current_file_name = name;
 		opening_a_file = true;
 	}
 	//Step 2: Read the block from the file.
 	Block temp;
+	int pp = (offset / BLOCK_SIZE)*BLOCK_A_SIZE;
 	fseek(fp, (offset / BLOCK_SIZE)*BLOCK_A_SIZE, SEEK_SET);
 	fread(&temp.byte_used, sizeof(int), 1, fp);
 	fseek(fp, sizeof(int), SEEK_CUR);
@@ -67,7 +68,7 @@ Block BufferManager::FetchBlock(const string& name, int offset)
 	//Step 3: Put it to the buffer.
 	int index = substitute(temp);
 	//Step 4: Return it.
-	return buffer[index];
+	return &buffer[index];
 }
 
 void BufferManager::WriteBlock(const Block& b)
@@ -106,7 +107,7 @@ void BufferManager::CreateFile(const string & name)
 	//Create a file
 	opening_a_file = true;
 	current_file_name = name;
-	fp = fopen(name.c_str(), "a+");
+	fp = fopen(name.c_str(), "ab+");
 	return;
 }
 
@@ -115,7 +116,20 @@ void BufferManager::DeleteFile(const string & name)
 	//Test if file name exceeds limit.
 	if (name.size() > MAX_FILENAME_LENGTH)
 		throw BMException("File name exceeds length limit!");
-	remove(name.c_str());
+	fp = fopen(name.c_str(), "w");
+	current_file_name = "";
+	opening_a_file = false;
+	int p=remove(name.c_str());
+	int pp = errno;
+	perror("delete failed:");
+	for (int i = 0; i < BUFFER_SIZE; i++)
+	{
+		if (!strcmp(buffer[i].file_name, name.c_str()))
+		{
+			Block new_block;
+			buffer[i] = new_block;
+		}
+	}
 	return;
 }
 
@@ -125,7 +139,7 @@ int BufferManager::FileSize(const string & filename)
 	{
 		current_file_name = filename;
 		opening_a_file = true;
-		fp = fopen(current_file_name.c_str(), "a+");
+		fp = fopen(current_file_name.c_str(), "ab+");
 	}
 	int length;
 	fseek(fp, 0, SEEK_END);
@@ -166,7 +180,7 @@ int BufferManager::substitute(const Block& b)
 
 void BufferManager::WriteToDisk(const Block & b)
 {
-	fp = fopen(b.file_name, "r+");
+	fp = fopen(b.file_name, "ab+");
 	current_file_name = b.file_name;
 	opening_a_file = true;
 	fseek(fp, (b.tag / BLOCK_SIZE)*BLOCK_A_SIZE, SEEK_SET);
@@ -187,7 +201,7 @@ void BufferManager::AppendRecord(const string & name, int offset, Byte * src, in
 	{
 		if (current_file_name != name || !opening_a_file)
 		{
-			fp = fopen(name.c_str(), "r+");
+			fp = fopen(name.c_str(), "ab+");
 			current_file_name = name;
 			opening_a_file = true;
 		}

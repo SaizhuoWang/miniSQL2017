@@ -14,8 +14,8 @@ class API;
 class RecordManager
 {
 public:
-	RecordManager(){}
-	~RecordManager(){}
+	RecordManager() {}
+	~RecordManager() {}
 
 	BufferManager bm;
 	API *api;

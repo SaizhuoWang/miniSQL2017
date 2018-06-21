@@ -14,13 +14,15 @@ typedef unsigned char Byte;
 class Attribute
 {
 public:
-	string name;
-	bool is_unique;
-	int type;
-	//0 for 'int', 1 for 'float', -n for 'char(n)'
+	int type;//0 for int, 1 for float, -n for char(n)
+	string name;//The name of this attribute
 	bool primary;
-	Attribute();
-	Attribute(Type ty, string name, bool unique) :type(ty), name(name), is_unique(unique) {};
+	bool unique;
+public:
+	Attribute() {};
+	Attribute(int ty, string name, bool unique, bool primary) :
+		type(ty), name(name), unique(unique), primary(primary) {};
+	Attribute(const Attribute &a);
 };
 
 class Restriction {
@@ -36,35 +38,41 @@ public:
 class Index
 {
 public:
-	Index() {};
-	Index(const string& iname, const string& tname, const Attribute& attr) :
-		name(iname), table_name(tname), attr(attr) {};
+	Index();
+	Index(const string& iname, const string& tname, const Attribute& attr);
+	Index(const Index& idx);
+	~Index();
+public:
 	string table_name, name;
-	Attribute attr;
+	Attribute *attr;
 };
 
 class Table
 {
 public:
-	Table(const string& name, int pki, const vector<Attribute>& attrs) :
-		name(name), primary_key_index(pki), attributes(attrs) {};
-	Table() {};
+	Table(const string& name, const vector<Attribute>& attrs, const vector<Index>& idices);
+	Table(const string& name, const vector<Attribute>& attrs);
+	Table(const Table& tbl);
+	Table();
+	~Table();
+public:
 	string name;
 	int primary_key_index;
-	vector<Attribute> attributes;
-	vector<Index> indices;
+	vector<Attribute> *attributes;
+	vector<Index> *indices;
 };
 
 class Block
 {
 public:
-	Block();
-	Block(const string& s);
 	Byte content[BLOCK_SIZE];
 	bool dirty;
 	char* file_name;
 	int tag;
 	bool pin;
-	Block& operator=(const Block& b);
 	int byte_used;
+public:
+	Block& operator=(const Block& b);
+	Block();
+	Block(const string& s);
 };

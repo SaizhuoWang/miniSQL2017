@@ -15,26 +15,25 @@ public:
 class CatalogManager
 {
 private:
-	BufferManager & bm;
-	vector<Table> tables;
-	vector<Index> indices;
-	map<string, int> table_records, index_records;
-	Byte* ReadAttribute(Attribute &attr,Byte* ptr);
-	Byte* ReadIndex(Index &idx, Byte* ptr);//Reading from ptr to obj dest
-	Byte* WriteAttribute(Byte* dest, const Attribute& src);
-	Byte* WriteIndex(Byte* dest, const Index& src);//Write from obj to dest ptr
-	void WriteTableCatalog(const Table& t);
-	void ReadTableCatalog(Table &t,Block &b);//R&W an table object to the buffer
-	void WriteIndexCatalog(const Index &idx);
+	BufferManager *bm;
+	map<string, Table*> *tables;
+	map<string, Index*> *indices;
+	Byte* ReadAttributeFromBytePtr(Attribute *attr,Byte* ptr);
+	Byte* ReadIndexFromBytePtr(Index *idx, Byte* ptr);//Reading from ptr to obj dest
+	Byte* WriteAttributeToBytePtr(Byte* dest, const Attribute& src);
+	Byte* WriteIndexToBytePtr(Byte* dest, const Index& src);//Write from obj to dest ptr
+	void WriteTableToCatalogFile(const Table& t);
+	void ReadTableFromCatalogFile(Table *t,Block &b);//R&W an table object to the buffer
+	void WriteIndexToCatalogFile(const Index &idx);
 	int FindAttribute(const Table &t,const string &aname);
 public:
 	/*
 		This constructor takes in a buffer manager and link it with the cm;
 		@param BufferManager& bfm: The buffer manager to be linked.
 	*/
-	CatalogManager(BufferManager& bfm) :bm(bfm) {};
+	CatalogManager(BufferManager& bfm);
 	CatalogManager();
-	~CatalogManager() {};
+	~CatalogManager();
 
 	/*
 		This function checks if a table of a given name exists.
@@ -54,14 +53,14 @@ public:
 		@param const string& tname: The given table name.
 		@return value: The pointer to the attribute vector.
 	*/
-	vector<Attribute>& attr(const string& tname);
+	vector<Attribute>* attr(const string& tname);
 	/*
 		This function fetches the index vector of a table with given table name.
 		It will throw exception if it finds that the table does not exist or some other error.
 		@param const string& tname: The given table name.
 		@return value: The pointer to the index vector.
 	*/
-	vector<Index>& idx(const string &tname);
+	vector<Index>* idx(const string &tname);
 	/*
 		Drop a table with given table name
 	*/
@@ -72,7 +71,7 @@ public:
 	/*
 		This function interface takes in the essential information to build a table and create a table.
 	*/
-	bool create_table(const string& table_name, const vector<Attribute>& attr, int primary_key_index);
+	bool create_table(const string& table_name, const vector<Attribute>* attri);
 	/*
 		This function interface takes in the essential information to build an index and create an index.
 	*/

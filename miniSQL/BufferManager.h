@@ -70,7 +70,7 @@ public:
 		@param int offset: The byte offset.
 		@return Block: The wanted block.
 	*/
-	Block FetchBlock(const string& name, int offset);
+	Block* FetchBlock(const string& name, int offset);
 	/*
 		This function interface takes in a set of data, together with the exact address it is needed to be written.
 		It then get the corresponding block to the buffer and then change it.
