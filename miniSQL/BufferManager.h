@@ -25,13 +25,8 @@ class BufferManager
 private:
 	//The buffer space
 	Block *buffer;
-	//The file name which is currently linked.
-	string current_file_name;
-	//Marking if BM is opening a file
-	bool opening_a_file;
 	//A list recording the order of use. This list is essential for LRU substitution strategy.
 	list<int> sub_que;
-	//File pointer to carry out read and write
 	FILE* fp;
 	/*
 		This function carries out the substitution work. In general, this function does the work of putting a block

@@ -35,6 +35,8 @@ public:
 	CatalogManager();
 	~CatalogManager();
 
+	Index* get_index(const string& iname);
+
 	/*
 		This function checks if a table of a given name exists.
 		@param const string& table_name: The given table name.

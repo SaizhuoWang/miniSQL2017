@@ -4,7 +4,7 @@
 using namespace std;
 
 #define BLOCK_SIZE 4096
-#define BLOCK_A_SIZE 5000
+#define BLOCK_A_SIZE 4104
 #define BUFFER_SIZE 30
 #define MAX_FILENAME_LENGTH 40
 #define SEGMENT_LENGTH 33

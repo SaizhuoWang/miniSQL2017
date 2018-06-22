@@ -203,19 +203,17 @@ bool CatalogManager::create_index(const string & iname, const string & tname, co
 bool CatalogManager::find_table(const string & table_name)
 {
 	string filename(table_name + ".tlog");
-	FILE* fp = fopen(filename.c_str(), "r+");
-	if (!fp) 
+	if (bm->FileSize(filename.c_str()) == 0 && (indices->find(table_name) == indices->end()))
 		return false;
-	else return true;
+	return true;
 }
  
 bool CatalogManager::find_index(const string & index_name)
 {
 	string filename(index_name + ".ilog");
-	FILE* fp = fopen(filename.c_str(), "r+");
-	if (!fp)
+	if (bm->FileSize(filename) == 0 && (indices->find(index_name) == indices->end()))
 		return false;
-	else return true;
+	return true;
 }
 
 int CatalogManager::FindAttribute(const Table & t,const string &aname)
@@ -290,6 +288,7 @@ bool CatalogManager::drop_table(const string & table_name)
 
 bool CatalogManager::drop_index(const string & index_name)
 {
+	if (!find_index(index_name)) return false;
 	Block *idx_blk=bm->FetchBlock(index_name + ".ilog", 0);
 	Index *idx=new Index;
 	ReadIndexFromBytePtr(idx, idx_blk->content);
@@ -319,4 +318,13 @@ bool CatalogManager::drop_index(const string & index_name)
 	WriteTableToCatalogFile(*this_table);
 	bm->DeleteFile(index_name + ".ilog");
 	return true;
+}
+
+Index * CatalogManager::get_index(const string & iname)
+{
+	Block *b = bm->FetchBlock(iname + ".ilog", 0);
+	Index* idx = new Index;
+	ReadIndexFromBytePtr(idx, b->content);
+	indices->insert(pair<string, Index*>(idx->name, idx));
+	return idx;
 }
