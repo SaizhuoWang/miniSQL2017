@@ -1,8 +1,8 @@
-#include "stdafx.h"
 #include "Interpreter.h"
+#include "CatalogManager.h"
+#include "API.h"
 
-
-Interpreter::Interpreter()
+Interpreter::Interpreter(API* api, CatalogManager * cmr):ap(api),cm(cmr)
 {
 }
 

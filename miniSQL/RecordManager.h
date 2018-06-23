@@ -1,16 +1,8 @@
-#ifndef RECORDMANAGER_H
-#define RECORDMANAGER_H
-
-#include "stdafx.h"
-#include <string>
-#include <vector>
-#include "BufferManager.h"
+#pragma once
 #include "mDef.h"
-#include "Condition.h"
+#include "API.h"
 
-using namespace std;
-class API;
-
+class BufferManager;
 class RecordManager
 {
 public:
@@ -41,9 +33,4 @@ private:
 	char * find_lastrecord(string tableName, int recordSize);
 
 	void print_record(char * recordpoint, int recordSize, vector<Attribute> * attributeVector, vector<string> * attributeNameVector);
-
-
 };
-
-
-#endif

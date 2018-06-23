@@ -1,7 +1,4 @@
-#include "stdafx.h"
-#include "BufferManager.h"
-#include "mDef.h"
-
+#include "Widget.h"
 #pragma warning(disable : 4996)
 
 BufferManager::BufferManager()

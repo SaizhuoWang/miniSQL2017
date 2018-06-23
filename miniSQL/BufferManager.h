@@ -1,8 +1,6 @@
 #pragma once
-#include "stdafx.h"
-#include "mDef.h"
 
-using namespace std;
+#include "mDef.h"
 
 /*BM is short for Buffer Manager. This exception class is thrown when there's any
 runtime error happens in Buffer Manager. The error message is stored in the string member
@@ -13,7 +11,7 @@ private:
 	string err_message;
 public:
 	BMException(const string& message):err_message(message){}
-	BMException();
+	BMException() {};
 	~BMException() {};
 	void show() { cout << err_message << endl; }
 };

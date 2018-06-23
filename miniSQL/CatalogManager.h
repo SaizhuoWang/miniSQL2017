@@ -1,13 +1,13 @@
 #pragma once
-#include "stdafx.h"
 #include "mDef.h"
 
+class BufferManager;
 class CMException
 {
 private:
 	string err_message;
 public:
-	CMException();
+	CMException() {};
 	~CMException() {};
 	CMException(string message) :err_message(message) {};
 };

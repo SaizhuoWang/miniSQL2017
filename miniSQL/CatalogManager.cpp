@@ -1,6 +1,4 @@
-#include "stdafx.h"
-#include "CatalogManager.h"
-
+#include "Widget.h"
 #pragma warning(disable : 4996)
 
 CatalogManager::CatalogManager()

@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-
 using namespace std;
 
 #define BLOCK_SIZE 4096
@@ -23,16 +22,6 @@ public:
 	Attribute(int ty, string name, bool unique, bool primary) :
 		type(ty), name(name), unique(unique), primary(primary) {};
 	Attribute(const Attribute &a);
-};
-
-class Restriction {
-public:
-	Restriction();
-	int aname;
-	//its index
-	int op;
-	//0 for '=', 1 for '<>', 2 for '<', 3 for '>', 4 for '<=', 5 for '>=
-	string value;
 };
 
 class Index
@@ -75,4 +64,32 @@ public:
 	Block& operator=(const Block& b);
 	Block();
 	Block(const string& s);
+};
+
+const int INT = 0;
+const int REAL = 1;
+const int CHAR = 2;
+
+
+enum OPERATOR
+{
+	OPERATOR_MORE,
+	OPERATOR_LESS,
+	OPERATOR_EQUAL,
+	OPERATOR_NOT_EQUAL,
+	OPERATOR_MORE_EQUAL,
+	OPERATOR_LESS_EQUAL,
+	OPERAROR_UNKNOW
+};
+
+class Condition
+{
+public:
+	Condition(string a, string v, OPERATOR op);
+	string attributeName;
+	string value;
+	OPERATOR operate;
+
+	bool isright(string compared, int type);
+
 };
