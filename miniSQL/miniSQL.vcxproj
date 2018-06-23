@@ -167,6 +167,9 @@
     <ClCompile Include="Interpreter.cpp" />
     <ClCompile Include="BPTree.cpp" />
     <ClCompile Include="BPTreeNode.cpp" />
+    <ClInclude Include="utils.h" />
+    <ClCompile Include="BPTree.cpp" />
+    <ClCompile Include="BPTreeNode.cpp" />
     <ClCompile Include="IndexManager.cpp" />
     <ClCompile Include="mDef.cpp" />
     <ClCompile Include="miniSQL.cpp" />
