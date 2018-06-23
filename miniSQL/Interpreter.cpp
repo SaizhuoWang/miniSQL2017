@@ -49,6 +49,27 @@ bool Interpreter::ctype(int t,string& s)
 		else return false;
 }
 
+void Interpreter::value(char* dest, const vector<string>* source, const vector<Attribute>* ats)
+{
+	stringstream ss;int a;float b;
+	for (int i = 0;i < source->size();i++)
+	{
+		ss << (*source)[i];
+		if ((*ats)[i].type == 0)
+		{
+			ss >> a; memcpy(dest, &a, sizeof(a));
+		}
+		else if ((*ats)[i].type == 1)
+		{
+			ss >> b;memcpy(dest, &b, sizeof(b));
+		}
+		else {
+			for (int j = 0;j < (*source)[i].length();j++)
+				memcpy(dest, &(*source)[i][j], sizeof(char));
+		}
+	}
+}
+
 int Interpreter::check_attr(const vector<Attribute>* ta, const string& aname)
 {
 	int i = 0;
@@ -101,7 +122,7 @@ bool Interpreter::syntax()
 						}
 						else { cout << "Unknown type at: " << tat << endl; return 0; }
 						ats.push_back(at);
-						if (over) { ap->create_table(tname, ats);return 0; }
+						if (over) { ap->create_table(tname, &ats);return 0; }
 					}
 					//primary key
 					else {
@@ -111,7 +132,7 @@ bool Interpreter::syntax()
 						for(int i=0;i<ats.size();i++)
 							if (!pk.compare(ats[i].name)) { ats[i].primary = true;break; }
 
-						if (over) { ap->create_table(tname, ats);return 0; }
+						if (over) { ap->create_table(tname, &ats);return 0; }
 					}
 				}
 			}
@@ -161,12 +182,17 @@ bool Interpreter::syntax()
 		if (s.find("(") == string::npos || s.find(")") == string::npos)
 		{cout << "'(' or ')' is absent" << endl;return 0;}
 		s.erase(0, s.find_first_of("(") + 1);
-		string val;
+		vector<string> val;
 		int over = 0;int index = 0;
 		while (1) {
 			if (over)
 				if (index == (*ta).size())
-				{ap->insert(tname, val);return 0;}	
+				{   
+					int size = ap->get_recordSize(tname);
+					char* vva = new char[size];
+					value(vva, &val, ta);
+					ap->insert(tname, vva,size);return 0;
+				}	
 				else { cout << "Not enough amount of values" << endl;return 0; }
 			string va;
 			if(s.find(",")!=string::npos)
@@ -176,7 +202,7 @@ bool Interpreter::syntax()
 			va = s.substr(0, s.find_first_of(")"));over = 1;
 			}
 			
-			if(ctype((*ta)[index++].type,va)){ val = val + va;continue; }
+			if(ctype((*ta)[index++].type,va)){ val.push_back(va);continue; }
 			else { cout << "The value " << va << " is not in correct type" << endl;return 0; }
 
 		}

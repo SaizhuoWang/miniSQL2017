@@ -23,6 +23,7 @@ public:
 	//get a word from a string and erase that word from the string
 	bool ctype(int t,string& s);
 	//check if a string matches its claimed type
+	void value(char* dest, const vector<string>* source, const vector<Attribute>* ats);
 	int check_attr(const vector<Attribute>* ta, const string& aname);
 	//check if an attribute exists and return its type
 private:
