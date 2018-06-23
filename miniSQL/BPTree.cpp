@@ -215,13 +215,13 @@ BPTree::~BPTree()
 	delete[] key;
 }
 
-int BPTree::find(const char *key)
+int BPTree::Find(const char *key)
 {
 	memcpy(this->key, key, keyLength);
 	return find(root);
 }
 
-bool BPTree::add(const char *key, int value)
+bool BPTree::Add(const char *key, int value)
 {
 	memcpy(this->key, key, keyLength);
 	this->value = value;
@@ -240,7 +240,7 @@ bool BPTree::add(const char *key, int value)
 	return t != -1;
 }
 
-bool BPTree::remove(const char *key)
+bool BPTree::Remove(const char *key)
 {
 	memcpy(this->key, key, keyLength);
 	int t = remove(root, 0, true, NULL);

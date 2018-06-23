@@ -38,12 +38,12 @@ public:
 	~BPTree();
 
 	// Find the value of certain key
-	int find(const char *key);
+	int Find(const char *key);
 
 	// Add a node
-	bool add(const char *key, int value);
+	bool Add(const char *key, int value);
 
 	// Remove a node
-	bool remove(const char *key);
+	bool Remove(const char *key);
 };
 

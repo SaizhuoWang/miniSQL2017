@@ -10,7 +10,7 @@ const char *IndexManager::getTreeFilename(const char *indexName) {
 int IndexManager::Find(const char *indexName, const char *key)
 {
 	BPTree *tree = new BPTree(getTreeFilename(indexName));
-	int ret = tree->find(key);
+	int ret = tree->Find(key);
 	delete tree;
 	return ret;
 }
@@ -18,7 +18,7 @@ int IndexManager::Find(const char *indexName, const char *key)
 bool IndexManager::Insert(const char *indexName, const char *key, int value)
 {
 	BPTree *tree = new BPTree(getTreeFilename(indexName));
-	if (!tree->add(key, value))
+	if (!tree->Add(key, value))
 	{
 		delete tree;
 		cerr << "Insert key error: Duplicated key in index `" << indexName << "`." << endl;
@@ -31,7 +31,7 @@ bool IndexManager::Insert(const char *indexName, const char *key, int value)
 bool IndexManager::Remove(const char *indexName, const char *key)
 {
 	BPTree *tree = new BPTree(getTreeFilename(indexName));
-	if (!tree->remove(key))
+	if (!tree->Remove(key))
 	{
 		delete tree;
 		cerr << "Remove key error: Cannot find key in index `" << indexName << "`." << endl;

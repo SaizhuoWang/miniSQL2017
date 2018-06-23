@@ -4,7 +4,7 @@
 #include "RecordManager.h"
 #include "IndexManager.h"
 
-static class Utils
+class Utils
 {
 private:
 	static BufferManager* bufferManager;
@@ -21,5 +21,6 @@ public:
 	static IndexManager *GetIndexManager();
 
 	static int GetTypeSize(int type);
+	static bool DeleteFile(const char * filename);
 };
 

@@ -62,7 +62,7 @@ BPTreeNode::~BPTreeNode()
 			delete[] key;
 }
 
-int BPTreeNode::FindPosition(const char *key) const
+size_t BPTreeNode::FindPosition(const char *key) const
 {
 	vector<char *>::const_iterator it, first = keys.begin();
 	ptrdiff_t count, step;

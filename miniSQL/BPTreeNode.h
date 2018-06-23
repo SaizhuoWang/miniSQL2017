@@ -26,7 +26,7 @@ public:
 	int GetPointer(int pos) const;
 	void SetPointer(int pos, int pointer);
 
-	int FindPosition(const char *key) const;
+	size_t FindPosition(const char *key) const;
 	void Insert(int pos, const char* key, int pointer);
 	void Remove(int pos);
 	BPTreeNode *Split(int newId, char *newKey);
