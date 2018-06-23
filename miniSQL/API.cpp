@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Widget.h"
 API::API(Interpreter* tip, RecordManager* trm, /*IndexManager* tim,*/  CatalogManager* tcm):
 	ip(tip),rm(trm),/*im(tim),*/ cm(tcm)
