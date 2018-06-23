@@ -31,6 +31,6 @@ private:
 	int left_blockspace(Block & current_block);
 	char * get_recordpoint(Block & current_block, int offset);
 	char * find_lastrecord(string tableName, int recordSize);
-
+	int typeSizeGet(int type);
 	void print_record(char * recordpoint, int recordSize, vector<Attribute> * attributeVector, vector<string> * attributeNameVector);
 };
