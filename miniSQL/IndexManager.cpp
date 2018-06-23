@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "BPTree.h"
 #include "IndexManager.h"
-
+#pragma warning(disable : 4996)
 const char *IndexManager::getTreeFilename(const char *indexName) {
 	return (string(indexName) + ".index").c_str();
 }

@@ -1,9 +1,9 @@
-#include "BPTree.h"
 #include "stdafx.h"
+#include "BPTree.h"
 #include "utils.h"
 #include "BPTreeNode.h"
 
-
+#pragma warning(disable : 4996)
 // Returns -1 when not found.
 int BPTree::find(int id)
 {

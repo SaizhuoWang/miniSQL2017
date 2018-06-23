@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Interpreter.h"
 #include "CatalogManager.h"
 #include "API.h"
