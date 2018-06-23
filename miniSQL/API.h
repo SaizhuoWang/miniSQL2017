@@ -20,8 +20,7 @@ public:
 	void insert(const string& tname, char* value, const int size);
 
 	int get_recordSize(const string& tname);
-	void attributeGet(const string& tname, vector<Attribute>* ats);
-
+	void attributeGet(const string& tname, vector<Attribute>* ats)£»
 	void recordIndexDelete(char* rp, int rs, int bo);
 	void recordAddIndex(char* rp, int rs, int bo);
 private:
