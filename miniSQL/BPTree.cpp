@@ -192,6 +192,7 @@ bool BPTree::CreateFile(const char *filename, int keyLength)
 	int header[] = { (BLOCK_SIZE - 8) / (keyLength + 4) + 1, keyLength, 0, -1, -1 };
 	fwrite(header, 4, 5, file);
 	fclose(file);
+	return true;
 }
 
 BPTree::BPTree(const char *filename) :filename(filename)

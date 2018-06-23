@@ -1,15 +1,15 @@
 #pragma once
 #include "mDef.h"
 #include "API.h"
+#include "BufferManager.h"
 
-class BufferManager;
 class RecordManager
 {
 public:
-	RecordManager(){}
-	~RecordManager(){}
+	RecordManager() {};
+	~RecordManager() {};
 
-	BufferManager bm;
+	BufferManager *bm;
 	API *api;
 	void create_table(string tableName);
 	void delete_table(string tableName);
