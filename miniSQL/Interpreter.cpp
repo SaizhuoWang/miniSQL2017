@@ -270,13 +270,21 @@ bool Interpreter::syntax()
 		tname = gword(s, " ");
 		s.erase(0, 6);
 		
+		cout << "ini s: " << s << endl;
 		ta = cm->attr(tname);
 		int over = 0;
 		while (1) {
 			string re;
 			if (s.find("and") != string::npos)
+			{
 				re = gword(s, " and ");
+				cout << "there is an and" << endl;
+			}
+				
 			else { re = gword(s, ";");over = 1; }
+
+			cout << "re: " << re << endl;
+			cout << "s: " << s << endl;
 
 			string aname = gword(re, " ");int type = check_attr(ta, aname);
 			if (type>1) { cout << aname << " does not exist" << endl;return 0; }
