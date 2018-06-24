@@ -10,7 +10,7 @@ private:
 
 public:
 	static void Initialize();
-
+	static void DeleteUtils();
 	static BufferManager *GetBufferManager();
 	static CatalogManager *GetCatalogManager();
 	static RecordManager *GetRecordManager();

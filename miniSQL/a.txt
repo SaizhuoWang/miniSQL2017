@@ -1,0 +1,28 @@
+miniSQL >execfile d:/table-select-0.sql;
+Create person succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+Insert succeed
+pid does not exist
+height does not exist
+ does not exist
+height does not exist
+person; does not exist
+miniSQL >

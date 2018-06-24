@@ -57,10 +57,10 @@ Block* BufferManager::FetchBlock(const string& name, int offset)
 	fread(temp.content, 1, BLOCK_SIZE, fp);
 	strcpy(temp.file_name, name.c_str());
 	temp.tag = offset;
+	fclose(fp);
 	//Step 3: Put it to the buffer.
 	int index = substitute(temp);
 	//Step 4: Return it.
-	fclose(fp);
 	return &buffer[index];
 }
 

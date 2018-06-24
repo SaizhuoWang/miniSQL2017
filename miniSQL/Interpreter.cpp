@@ -72,17 +72,20 @@ void Interpreter::value(char* dest, const vector<string>* source, const vector<A
 	stringstream ss;int a;float b;
 	for (int i = 0;i < source->size();i++)
 	{
+		ss.clear();
+		ss.str("");
 		ss << (*source)[i];
 		if ((*ats)[i].type == 0)
 		{
 			ss >> a;
-			strncpy(dest, (char*)&a, sizeof(int));
+			memcpy(dest, &a, sizeof(a));
 			dest += sizeof(a);
 		}
 		else if ((*ats)[i].type == 1)
 		{
 			ss >> b;
-			strncpy(dest, (char*)&b, sizeof(float));
+			//printf("%X", *(int*)&b);
+			memcpy(dest,&b,sizeof(float));
 			dest += sizeof(b);
 		}
 		else {
@@ -220,7 +223,7 @@ bool Interpreter::syntax()
 				if (index == (*ta).size())
 				{   
 					int size = ap->get_recordSize(tname);
-					char vva[10086];
+					char *vva=new char[size];
 					value(vva, &val, ta);
 					ap->insert(tname, vva,size);return 0;
 				}	

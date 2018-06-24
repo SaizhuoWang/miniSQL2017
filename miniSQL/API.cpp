@@ -82,7 +82,7 @@ int API::get_recordSize(const string& tname)
 		if ((*ats)[i].type == 0)
 			size += 4;
 		else if ((*ats)[i].type == 1)
-			size += 8;
+			size += 4;
 		else size += (-(*ats)[i].type);
 	}
 	return size;

@@ -14,6 +14,14 @@ void Utils::Initialize()
 	indexManager = new IndexManager();
 }
 
+void Utils::DeleteUtils()
+{
+	delete bufferManager;
+	delete catalogManager;
+	delete indexManager;
+	delete recordManager;
+}
+
 BufferManager *Utils::GetBufferManager()
 {
 	return bufferManager;

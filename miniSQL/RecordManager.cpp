@@ -381,7 +381,7 @@ int RecordManager::typeSizeGet(int type)
 	if (type == 0)
 		length = 4;
 	else if (type == 1)
-		length = 8;
+		length = 4;
 	else
 		length = -type;
 	return length;
