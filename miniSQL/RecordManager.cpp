@@ -317,11 +317,11 @@ bool RecordManager::delete_blockrecord(Block & current_block, vector<Condition> 
 	{
 		if(record_fitcondition(recordpoint, recordSize, &attributeVector, conditionVector))
 		{
-			cout << recordpoint << endl;
+			//cout << recordpoint << endl;
 			//delete index of this record
 			api->recordIndexDelete(recordpoint, recordSize, block_id + offset);
 			end_recordpoint = find_lastrecord(tableName, recordSize);
-			cout << end_recordpoint << endl;
+			//cout << end_recordpoint << endl;
 			//cout << offset << endl;
 			memcpy(recordpoint, end_recordpoint, recordSize);
 			api->recordAddIndex(recordpoint, recordSize, block_id+offset);
