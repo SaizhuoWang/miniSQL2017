@@ -154,14 +154,17 @@ bool Interpreter::syntax()
 		}
 		else if (!type.compare("index")) {
 			if (s.find("on") == string::npos) { cout << "'on' is absent" << endl;return 0; }
+			if (s.find("(") == string::npos || s.find(")") == string::npos)
+			{
+				cout << "'(' or ')' is absent" << endl;return 0;
+			}
 			string iname = gword(s," ");
 			s.erase(0, s.find_first_of(" ") + 1);
-			string tname = gword(s," ");
+			string tname = gword(s,"(");
 			if (!cm->find_table(tname)) { cout << tname << " does not exist" << endl; return 0; }
 			ta = cm->attr(tname);
-			if(s.find("(")==string::npos || s.find(")")==string::npos)
-			{cout << "'(' or ')' is absent" << endl;return 0;}
-			string aname = s.substr(s.find_first_of("(") + 1, s.find_first_of(")") - s.find_first_of("(") - 1);
+			
+			string aname = gword(s,")");
 			if (check_attr(ta,aname) > 1) 
 			 { cout << aname << " does not exist in " << tname << endl;return 0; }
 			ap->create_index(iname, tname, aname);
