@@ -31,7 +31,7 @@ string Interpreter::gword(string& s,const string& mark)
 	return t;
 }
 
-bool Interpreter::ctype(int t,string& s)
+bool Interpreter::ctype(const int& t,string& s)
 {   
 	int stype = 0;
 	if (s.find("\"") != string::npos)stype = -(s.length() - 2);
@@ -225,11 +225,10 @@ bool Interpreter::syntax()
 		if(s.find("where")!=string::npos)
 		tname = gword(s, " ");
 		s.erase(0, s.find_first_of(" "));
-		vector<Restriction> res;
+		vector<Condition> res;
 		ta = cm->attr(tname);
 		int over = 0;
 		while (1) {
-			Restriction rest;
 			string re;
 			if (s.find("and") != string::npos)
 				re = gword(s, " and ");
@@ -237,32 +236,27 @@ bool Interpreter::syntax()
 
 			string aname = gword(re, " ");int type = check_attr(ta, aname);
 			if (type>1) { cout << aname << " does not exist" << endl;return 0; }
-			int ina = 0;int i = 0;
-
-			for(i=0;i<(*ta).size;i++)
-				if (!aname.compare((*ta)[i].name)) { ina = i;break; }
-		
+	
 			string oper = gword(re, " ");
-			int ope = 0;
-			if (!oper.compare("="))ope = 0;
-			else if (!oper.compare("<>"))ope = 1;
-			else if (!oper.compare("<"))ope = 2;
-			else if (!oper.compare(">"))ope = 3;
-			else if (!oper.compare("<="))ope = 4;
-			else if (!oper.compare(">="))ope = 5;
+			OPERATOR ope;
+			if (!oper.compare("="))ope = OPERATOR_EQUAL;
+			else if (!oper.compare("<>"))ope = OPERATOR_NOT_EQUAL;
+			else if (!oper.compare("<"))ope = OPERATOR_LESS;
+			else if (!oper.compare(">"))ope = OPERATOR_MORE;
+			else if (!oper.compare("<="))ope = OPERATOR_LESS_EQUAL;
+			else if (!oper.compare(">="))ope = OPERATOR_MORE_EQUAL;
+			else { cout << oper << " is not legal" << endl;return; }
 
 			string value = re;
 			if (!ctype(type,value)) 
 			{ cout << value << " is not in correct type as " << aname << endl; return 0; }
 
-			rest.aname = ina;
-			rest.op = ope;
-			rest.value = value;
+			Condition rest(aname, value, ope);
 
 			res.push_back(rest);
 			if(over)
-				if (sod) { ap->select(tname, res);return 0; }
-				else { ap->ddelete(tname, res);return 0; }
+				if (sod) { ap->select(tname, &res);return 0; }
+				else { ap->ddelete(tname, &res);return 0; }
 		}
 	}
 
