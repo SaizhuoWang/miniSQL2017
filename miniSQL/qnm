@@ -2,3 +2,4 @@ create table e ( a int );
 insert into e values (1);
 insert into e values (2);
 select *  from e where a > 1;
+d:/index-create-delete-0.sql;
