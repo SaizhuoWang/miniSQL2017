@@ -99,9 +99,8 @@ bool Interpreter::syntax()
 
 		if (!type.compare("table")) {
 			string tname = gword(s," ");
-			cout << tname << endl;
-			cout << cm->find_table(tname) << endl;return 0;
-			/*if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
+			
+			if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
 			else {
 				if (s[0] != '(') { cout << "'(' is absent after table's name" << endl;return 0 ; }
 				s.erase(0, 1);
@@ -148,7 +147,7 @@ bool Interpreter::syntax()
 						if (over) { ap->create_table(tname, &ats);return 0; }
 					}
 				}
-			}*/
+			}
 		}
 		else if (!type.compare("index")) {
 			if (s.find("on") == string::npos) { cout << "'on' is absent" << endl;return 0; }
