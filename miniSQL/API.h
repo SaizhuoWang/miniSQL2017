@@ -8,6 +8,7 @@ class IndexManager;
 class API
 {
 public:
+	API();
     API(Interpreter* tip, RecordManager* trm, /*IndexManager* tim,*/ CatalogManager* tcm);
 	~API();
 

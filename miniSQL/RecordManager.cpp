@@ -22,7 +22,7 @@ string RecordManager::record_filename(string tableName)
 void RecordManager::create_table(string tableName)
 {
 	string recordFileName = record_filename(tableName);
-	bm.CreateFile(recordFileName);
+	bm->CreateFile(recordFileName);
 }
 
 /**
@@ -33,7 +33,7 @@ void RecordManager::delete_table(string tableName)
 {
 	string recordFileName = record_filename(tableName);
 	cout << recordFileName;
-	bm.DeleteFile(recordFileName);
+	bm->DeleteFile(recordFileName);
 }
 
 /** 
@@ -57,19 +57,19 @@ bool RecordManager::insert_record(string tableName, char * record, int recordSiz
 {
 	string recordFileName = record_filename(tableName);
 	int offset = 0;
-	Block *current_block = bm.FetchBlock(recordFileName, offset);
+	Block *current_block = bm->FetchBlock(recordFileName, offset);
 	while(true)
 	{
 		if(left_blockspace(*current_block) >= recordSize)
 		{
-			bm.AppendRecord(recordFileName, offset, (Byte*)record, recordSize);
-			bm.WriteBlock(*current_block);//write to block after insert record
+			bm->AppendRecord(recordFileName, offset, (Byte*)record, recordSize);
+			bm->WriteBlock(*current_block);//write to block after insert record
 			return true;
 		}
 		else
 		{
 			offset += BLOCK_SIZE; //change offset to find next block
-			current_block = bm.FetchBlock(recordFileName, offset);
+			current_block = bm->FetchBlock(recordFileName, offset);
 		}
 	}
 	cout << "cannot insert a record" << endl;
@@ -98,7 +98,7 @@ bool RecordManager::show_allrecord(string tableName, vector<string> * attributeN
 	string recordFileName = record_filename(tableName);
 	int offset = 0;
 	int recordSize = api->get_recordSize(tableName);
-	Block * current_block = bm.FetchBlock(recordFileName, offset);
+	Block * current_block = bm->FetchBlock(recordFileName, offset);
 
 	while(true)
 	{	
@@ -116,7 +116,7 @@ bool RecordManager::show_allrecord(string tableName, vector<string> * attributeN
 			//show current block and find next block
 			show_blockrecord(tableName, *current_block, attributeNameVector, conditionVector, recordSize);
 			offset += BLOCK_SIZE;
-			current_block = bm.FetchBlock(recordFileName, offset);
+			current_block = bm->FetchBlock(recordFileName, offset);
 		}
 	}
 	return false;
@@ -240,16 +240,12 @@ void RecordManager::print_record(char * recordpoint, int recordSize, vector<Attr
 				// judge the type of attribtue and show
 				if(type == 0)
 				{
-					ss << content;
-					int temp;
-					ss >> temp;
+					int temp = *((int *)content);
 					printf("%d ", temp);
 				}
 				else if(type == 1)
 				{
-					ss << content;
-					float temp;
-					ss >> temp;
+					float temp = *((float *)content);
 					printf("%f ", temp);
 				}
 				else
@@ -257,7 +253,6 @@ void RecordManager::print_record(char * recordpoint, int recordSize, vector<Attr
 					string temp = content;
 					printf("%s ", temp.c_str());
 				}
-				ss.clear();
 			}
 		}
 		contentBegin += typeSize;
@@ -274,7 +269,7 @@ bool RecordManager::delete_allrecord(string tableName, vector<Condition> * condi
 {
 	string recordFileName = record_filename(tableName);
 	int offset = 0;
-	Block *current_block = bm.FetchBlock(recordFileName, offset);
+	Block *current_block = bm->FetchBlock(recordFileName, offset);
 	int recordSize = api->get_recordSize(tableName);
 	while(true)
 	{
@@ -286,16 +281,16 @@ bool RecordManager::delete_allrecord(string tableName, vector<Condition> * condi
 		{
 			//cout << "i am here" << endl;
 			delete_blockrecord(*current_block, conditionVector, tableName, offset);
-			bm.WriteBlock(*current_block);
+			bm->WriteBlock(*current_block);
 			return true;
 		}
 		else
 		{
 			//delete records in current block and get next block
 			delete_blockrecord(*current_block, conditionVector, tableName, offset);
-			bm.WriteBlock(*current_block);
+			bm->WriteBlock(*current_block);
 			offset += BLOCK_SIZE;
-			current_block = bm.FetchBlock(recordFileName, offset);
+			current_block = bm->FetchBlock(recordFileName, offset);
 		}
 	}
 }
@@ -322,11 +317,11 @@ bool RecordManager::delete_blockrecord(Block & current_block, vector<Condition> 
 	{
 		if(record_fitcondition(recordpoint, recordSize, &attributeVector, conditionVector))
 		{
-			cout << recordpoint << endl;
+			//cout << recordpoint << endl;
 			//delete index of this record
 			api->recordIndexDelete(recordpoint, recordSize, block_id + offset);
 			end_recordpoint = find_lastrecord(tableName, recordSize);
-			cout << end_recordpoint << endl;
+			//cout << end_recordpoint << endl;
 			//cout << offset << endl;
 			memcpy(recordpoint, end_recordpoint, recordSize);
 			api->recordAddIndex(recordpoint, recordSize, block_id+offset);
@@ -351,7 +346,7 @@ char * RecordManager::find_lastrecord(string tableName, int recordSize)
 	string recordFileName = record_filename(tableName);
 	int offset = 0;
 	char * end_recordpoint;
-	Block * current_block = bm.FetchBlock(recordFileName, offset);
+	Block * current_block = bm->FetchBlock(recordFileName, offset);
 	while(true)
 	{
 		if(current_block->byte_used == 0)
@@ -366,8 +361,20 @@ char * RecordManager::find_lastrecord(string tableName, int recordSize)
 		else
 		{
 			offset += BLOCK_SIZE;
-			current_block = bm.FetchBlock(recordFileName, offset);
+			current_block = bm->FetchBlock(recordFileName, offset);
 		}
 	}
 	return NULL;
+}
+
+int RecordManager::typeSizeGet(int type)
+{
+	int length = 0;
+	if (type == 0)
+		length = 4;
+	else if (type == 1)
+		length = 8;
+	else
+		length = -type;
+	return length;
 }

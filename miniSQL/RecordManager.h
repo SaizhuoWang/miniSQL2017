@@ -1,15 +1,15 @@
 #pragma once
 #include "mDef.h"
 #include "API.h"
+#include "BufferManager.h"
 
-class BufferManager;
 class RecordManager
 {
 public:
-	RecordManager(){}
-	~RecordManager(){}
+	RecordManager() {};
+	~RecordManager() {};
 
-	BufferManager bm;
+	BufferManager *bm;
 	API *api;
 	void create_table(string tableName);
 	void delete_table(string tableName);
@@ -31,6 +31,6 @@ private:
 	int left_blockspace(Block & current_block);
 	char * get_recordpoint(Block & current_block, int offset);
 	char * find_lastrecord(string tableName, int recordSize);
-
+	int typeSizeGet(int type);
 	void print_record(char * recordpoint, int recordSize, vector<Attribute> * attributeVector, vector<string> * attributeNameVector);
 };
