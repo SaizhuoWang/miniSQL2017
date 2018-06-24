@@ -1,9 +1,5 @@
 #pragma once
-#include "BufferManager.h"
-#include "CatalogManager.h"
-#include "RecordManager.h"
-#include "IndexManager.h"
-
+#include "Widget.h"
 class Utils
 {
 private:

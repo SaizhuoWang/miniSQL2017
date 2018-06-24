@@ -9,7 +9,6 @@ class API
 {
 public:
 	API();
-    API(Interpreter* tip, RecordManager* trm, /*IndexManager* tim,*/ CatalogManager* tcm);
 	~API();
 
 	void create_table(const string& tname, const vector<Attribute>* ats);
@@ -24,7 +23,7 @@ public:
 	void attributeGet(const string& tname, vector<Attribute>* ats);
 	void recordIndexDelete(char* rp, int rs, int bo);
 	void recordAddIndex(char* rp, int rs, int bo);
-private:
+
 	Interpreter * ip;
 	RecordManager * rm;
 	IndexManager * im;

@@ -3,7 +3,7 @@
 #include "CatalogManager.h"
 #include "API.h"
 
-Interpreter::Interpreter(API* api, CatalogManager * cmr):ap(api),cm(cmr)
+Interpreter::Interpreter()
 {
 }
 
@@ -12,16 +12,30 @@ Interpreter::~Interpreter()
 {
 }
 
-template <class T>
-void Interpreter::read(T& rin)
+void Interpreter::read()
+{
+	s.clear();
+	string temp;
+	cin >> temp;
+	while (temp[temp.length() - 1] != ';')
+	{
+		s = s + temp + " ";
+		cin >> temp;
+	}
+	s = s + temp + " ";
+}
+
+void Interpreter::fread(ifstream& rin)
 {   
 	s.clear();
 	string temp;
+	rin >> temp;
 	while (temp[temp.length() - 1] != ';') 
 	{
-		rin >> temp;
-		s = s + temp + " ";		
+		s = s + temp + " ";
+		rin >> temp;	
 	} 
+	s = s + temp + " ";
 }
 
 string Interpreter::gword(string& s,const string& mark)
@@ -31,11 +45,12 @@ string Interpreter::gword(string& s,const string& mark)
 	return t;
 }
 
-bool Interpreter::ctype(const int& t,string& s)
+bool Interpreter::ctype(const int& t,string& ss)
 {   
 	int stype = 0;
-	if (s.find("\"") != string::npos)stype = -(s.length() - 2);
-	else if (s.find(".") != string::npos)stype = 1;
+	int len = ss.length();
+	if (ss.find("\"") != string::npos)stype = -(len - 2);
+	else if (ss.find(".") != string::npos)stype = 1;
 	else stype = 0;
 
 	if (stype >= 0)
@@ -44,7 +59,7 @@ bool Interpreter::ctype(const int& t,string& s)
 	else
 		if (stype >= t) {
 			int offset = stype - t;
-			while (offset--)s = s + " ";
+			while (offset--)ss = ss + " ";
 			return true;
 		}
 		else return false;
@@ -87,9 +102,12 @@ bool Interpreter::syntax()
 	vector<Attribute>* ta;
 	if (!op.compare("create")) {
 		string type = gword(s," ");
+
 		if (!type.compare("table")) {
 			string tname = gword(s," ");
-			if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
+			cout << tname << endl;
+			cout << cm->find_table(tname) << endl;return 0;
+			/*if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
 			else {
 				if (s[0] != '(') { cout << "'(' is absent after table's name" << endl;return 0 ; }
 				s.erase(0, 1);
@@ -136,7 +154,7 @@ bool Interpreter::syntax()
 						if (over) { ap->create_table(tname, &ats);return 0; }
 					}
 				}
-			}
+			}*/
 		}
 		else if (!type.compare("index")) {
 			if (s.find("on") == string::npos) { cout << "'on' is absent" << endl;return 0; }
@@ -245,7 +263,7 @@ bool Interpreter::syntax()
 			else if (!oper.compare(">"))ope = OPERATOR_MORE;
 			else if (!oper.compare("<="))ope = OPERATOR_LESS_EQUAL;
 			else if (!oper.compare(">="))ope = OPERATOR_MORE_EQUAL;
-			else { cout << oper << " is not legal" << endl;return; }
+			else { cout << oper << " is not legal" << endl;return 0 ; }
 
 			string value = re;
 			if (!ctype(type,value)) 
@@ -266,11 +284,14 @@ bool Interpreter::syntax()
 	else if (!op.compare("execfile")) {
 		string fname = gword(s, ";");
 		ifstream fin(fname);
-		read(fin);
+		fread(fin);
 		bool quit = 0;
-		while (!fin.eof()&&!quit) { quit = syntax();read(fin); }
+		while (!fin.eof()&&!quit) { quit = syntax();fread(fin); }
 		if (quit)return 1;
 		else return 0;
 	}	
-	else cout << "Not a legal instruction" << endl;
+	else {
+		cout << "Not a legal instruction" << endl; return 0;
+	}
+	return 0;
 }
