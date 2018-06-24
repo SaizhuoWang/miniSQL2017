@@ -2,6 +2,7 @@
 #include "Interpreter.h"
 #include "CatalogManager.h"
 #include "API.h"
+#pragma warning(disable : 4996)
 
 Interpreter::Interpreter()
 {
@@ -69,15 +70,22 @@ void Interpreter::value(char* dest, const vector<string>* source, const vector<A
 		ss << (*source)[i];
 		if ((*ats)[i].type == 0)
 		{
-			ss >> a; memcpy(dest, &a, sizeof(a));
+			ss >> a;
+			strncpy(dest, (char*)&a, sizeof(int));
+			dest += sizeof(a);
 		}
 		else if ((*ats)[i].type == 1)
 		{
-			ss >> b;memcpy(dest, &b, sizeof(b));
+			ss >> b;
+			strncpy(dest, (char*)&b, sizeof(float));
+			dest += sizeof(b);
 		}
 		else {
-			for (int j = 0;j < (*source)[i].length();j++)
-				memcpy(dest, &(*source)[i][j], sizeof(char));
+			for (int j = 0; j < (*source)[i].length(); j++)
+			{
+				strncpy(dest, (char*)&(*source)[i][j], sizeof(char));
+				dest++;
+			}
 		}
 	}
 }
@@ -204,7 +212,7 @@ bool Interpreter::syntax()
 				if (index == (*ta).size())
 				{   
 					int size = ap->get_recordSize(tname);
-					char* vva = new char[size];
+					char vva[10086];
 					value(vva, &val, ta);
 					ap->insert(tname, vva,size);return 0;
 				}	
