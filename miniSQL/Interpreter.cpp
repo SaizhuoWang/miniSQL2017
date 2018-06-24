@@ -105,9 +105,9 @@ bool Interpreter::syntax()
 
 		if (!type.compare("table")) {
 			string tname = gword(s," ");
-			cout << tname << endl;
-			cout << cm->find_table(tname) << endl;return 0;
-			/*if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
+			/*cout << tname << endl;
+			cout << cm->find_table(tname) << endl;return 0;*/
+			if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
 			else {
 				if (s[0] != '(') { cout << "'(' is absent after table's name" << endl;return 0 ; }
 				s.erase(0, 1);
@@ -154,7 +154,7 @@ bool Interpreter::syntax()
 						if (over) { ap->create_table(tname, &ats);return 0; }
 					}
 				}
-			}*/
+			}
 		}
 		else if (!type.compare("index")) {
 			if (s.find("on") == string::npos) { cout << "'on' is absent" << endl;return 0; }
@@ -263,7 +263,7 @@ bool Interpreter::syntax()
 			else if (!oper.compare(">"))ope = OPERATOR_MORE;
 			else if (!oper.compare("<="))ope = OPERATOR_LESS_EQUAL;
 			else if (!oper.compare(">="))ope = OPERATOR_MORE_EQUAL;
-			else { cout << oper << " is not legal" << endl;return; }
+			else { cout << oper << " is not legal" << endl;return false; }
 
 			string value = re;
 			if (!ctype(type,value)) 

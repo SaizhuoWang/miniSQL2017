@@ -124,6 +124,7 @@ void BufferManager::DeleteFile(const string & name)
 int BufferManager::FileSize(const string & filename)
 {
 	fp = fopen(filename.c_str(),"rb+");
+	if (!fp) return 0;
 	int length;
 	fseek(fp, 0, SEEK_END);
 	length = (int)ftell(fp);
