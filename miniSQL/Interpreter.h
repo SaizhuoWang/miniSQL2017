@@ -17,7 +17,7 @@ public:
 	void read();
 	/*read in instructions from file streams
 	@param ifstream& rin: file pointer */
-	void fread(ifstream& rin);
+	bool fread(ifstream& rin);
 	
 	/*get a word from a string and erase that word from the string
 	@param string& s: initial string which provides the word

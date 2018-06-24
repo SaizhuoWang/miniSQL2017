@@ -22,15 +22,16 @@ void Interpreter::read()
 	} while (c != ';');
 }
 
-void Interpreter::fread(ifstream& rin)
+bool Interpreter::fread(ifstream& rin)
 {   
 	s.clear();
 	char c;
 	do {
-		if (rin.eof())return;
+		if (rin.eof())return false;
 		c = rin.get();
-		if(c!='\n') s = s + c;
+		if(c!='\n') s = s + c;	
 	} while (c != ';');
+	return true;
 }
 
 string Interpreter::gword(string& s,const string& mark)
@@ -286,13 +287,12 @@ bool Interpreter::syntax()
 	else if (!op.compare("execfile")) {
 		string fname = gword(s, ";");
 		ifstream fin(fname);
-		fread(fin);
+		
 		bool quit = 0;
-		while (!fin.eof()&&!quit) 
-		{ 
-			quit = syntax();
-			if(!fin.eof())fread(fin); 
-		}
+		do {
+			if(fread(fin))quit = syntax();
+			else break;
+		} while (!fin.eof() && !quit);
 	    return 0;
 	}	
 	else {
