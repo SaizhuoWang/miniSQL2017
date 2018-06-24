@@ -15,27 +15,21 @@ Interpreter::~Interpreter()
 void Interpreter::read()
 {
 	s.clear();
-	string temp;
-	cin >> temp;
-	while (temp[temp.length() - 1] != ';')
-	{
-		s = s + temp + " ";
-		cin >> temp;
-	}
-	s = s + temp + " ";
+	char c;
+	do {
+		c = cin.get();
+		if(c!='\n')s = s + c;
+	} while (c != ';');
 }
 
 void Interpreter::fread(ifstream& rin)
 {   
 	s.clear();
-	string temp;
-	rin >> temp;
-	while (temp[temp.length() - 1] != ';') 
-	{
-		s = s + temp + " ";
-		rin >> temp;	
-	} 
-	s = s + temp + " ";
+	char c;
+	do {
+		c = rin.get();
+		if(c!='\n') s = s + c;
+	} while (c != ';');
 }
 
 string Interpreter::gword(string& s,const string& mark)
