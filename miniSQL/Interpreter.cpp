@@ -232,11 +232,18 @@ bool Interpreter::syntax()
 			cout << "'from' is absent" << endl;return 0;
 		}
 		s.erase(0, s.find_first_of("from") + 5);
-		string tname;
-		if(s.find("where")!=string::npos)
+		string tname;vector<Condition> res;
+		if (s.find("where") == string::npos)
+		{
+			tname = gword(s, ";");
+			if (sod)ap->select(tname, &res);
+			else ap->ddelete(tname, &res);
+			return 0;
+		}
+		
 		tname = gword(s, " ");
-		s.erase(0, s.find_first_of(" "));
-		vector<Condition> res;
+		s.erase(0, 6);
+		
 		ta = cm->attr(tname);
 		int over = 0;
 		while (1) {
