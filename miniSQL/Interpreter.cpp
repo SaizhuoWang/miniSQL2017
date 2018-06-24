@@ -50,7 +50,7 @@ bool Interpreter::ctype(const int& t,string& ss)
 	{
 		stype = -(len - 2);
 		ss.erase(0, 1);
-		ss.erase(0, ss.find_first_of("\""));
+		ss = ss.substr(0, ss.find_first_of("\""));
 	}
 	else if (ss.find(".") != string::npos)stype = 1;
 	else stype = 0;
