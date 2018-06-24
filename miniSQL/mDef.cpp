@@ -149,21 +149,23 @@ Condition::Condition(string a, string v, OPERATOR op)
 	operate = op;
 }
 
-bool Condition::isright(string compared, int type)
+bool Condition::isright(char* compared, int type)
 {
 	stringstream ss;
 	int int_o, int_c;
 	float float_o, float_c;
 	string string_o, string_c;
-	ss << value << " " << compared;
+	ss << value;
 	switch (type)
 	{
 	case 0:
-		ss >> int_o >> int_c;
+		ss >> int_o;
+		int_c = *(int*)compared;
 		return mycompare(int_o, int_c, operate);
 		break;
 	case 1:
-		ss >> float_o >> float_c;
+		ss >> float_o;
+		float_c = *(float*)compared;
 		return mycompare(float_o, float_c, operate);
 		break;
 	default:
