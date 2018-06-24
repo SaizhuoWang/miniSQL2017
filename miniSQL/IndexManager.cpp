@@ -3,13 +3,14 @@
 #include "BPTree.h"
 #include "IndexManager.h"
 #pragma warning(disable : 4996)
-const char *IndexManager::getTreeFilename(const char *indexName) {
-	return (string(indexName) + ".index").c_str();
+string IndexManager::getTreeFilename(const char *indexName) {
+	string s = string(indexName) + ".index";
+	return s;
 }
 
 int IndexManager::Find(const char *indexName, const char *key)
 {
-	BPTree *tree = new BPTree(getTreeFilename(indexName));
+	BPTree *tree = new BPTree(getTreeFilename(indexName).c_str());
 	int ret = tree->Find(key);
 	delete tree;
 	return ret;
@@ -17,7 +18,7 @@ int IndexManager::Find(const char *indexName, const char *key)
 
 bool IndexManager::Insert(const char *indexName, const char *key, int value)
 {
-	BPTree *tree = new BPTree(getTreeFilename(indexName));
+	BPTree *tree = new BPTree(getTreeFilename(indexName).c_str());
 	if (!tree->Add(key, value))
 	{
 		delete tree;
@@ -30,7 +31,7 @@ bool IndexManager::Insert(const char *indexName, const char *key, int value)
 
 bool IndexManager::Remove(const char *indexName, const char *key)
 {
-	BPTree *tree = new BPTree(getTreeFilename(indexName));
+	BPTree *tree = new BPTree(getTreeFilename(indexName).c_str());
 	if (!tree->Remove(key))
 	{
 		delete tree;
@@ -48,7 +49,7 @@ bool IndexManager::CreateIndex(const char *indexName)
 	if (index == NULL)
 		return false;
 	int keyLength = Utils::GetTypeSize(index->attr->type);
-	return BPTree::CreateFile(getTreeFilename(indexName), keyLength);
+	return BPTree::CreateFile(getTreeFilename(indexName).c_str(), keyLength);
 }
 
 bool IndexManager::DropIndex(const char * indexName)

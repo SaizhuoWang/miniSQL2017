@@ -3,7 +3,7 @@
 class IndexManager
 {
 private:
-	const char *getTreeFilename(const char *indexName);
+	string getTreeFilename(const char *indexName);
 
 public:
 
