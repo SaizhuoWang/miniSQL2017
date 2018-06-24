@@ -61,7 +61,7 @@ bool Interpreter::ctype(const int& t,string& ss)
 	else
 		if (stype >= t) {
 			int offset = stype - t;
-			while (offset--)ss = ss + " ";
+			while (offset--)ss = ss + "\0";
 			return true;
 		}
 		else return false;
@@ -78,12 +78,14 @@ void Interpreter::value(char* dest, const vector<string>* source, const vector<A
 			ss >> a;
 			strncpy(dest, (char*)&a, sizeof(int));
 			dest += sizeof(a);
+			ss.clear();
 		}
 		else if ((*ats)[i].type == 1)
 		{
 			ss >> b;
 			strncpy(dest, (char*)&b, sizeof(float));
 			dest += sizeof(b);
+			ss.clear();
 		}
 		else {
 			for (int j = 0; j < (*source)[i].length(); j++)
