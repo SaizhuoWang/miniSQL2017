@@ -7,6 +7,7 @@ class RecordManager
 {
 public:
 	RecordManager() {};
+	RecordManager(API *parent);
 	~RecordManager() {};
 
 	BufferManager *bm;

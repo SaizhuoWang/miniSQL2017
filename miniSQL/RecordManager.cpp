@@ -1,8 +1,16 @@
 #include "stdafx.h"
 #include "RecordManager.h"
+#include "API.h"
 #include "mDef.h"
+#include "utils.h"
 #include <iostream>
 #include <cstring>
+
+RecordManager::RecordManager(API *parent)
+{
+	this->bm = Utils::GetBufferManager();
+	this->api = parent;
+}
 
 /**
  * generate a special filename for recordfile

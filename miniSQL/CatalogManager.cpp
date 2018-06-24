@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "utils.h"
 #include "Widget.h"
 #pragma warning(disable : 4996)
 
@@ -12,6 +13,7 @@ CatalogManager::CatalogManager()
 	bm = NULL;
 	this->indices = new map<string, Index*>;
 	this->tables = new map<string, Table*>;
+	this->bm = Utils::GetBufferManager();
 }
 
 CatalogManager::CatalogManager(BufferManager & bfm)
