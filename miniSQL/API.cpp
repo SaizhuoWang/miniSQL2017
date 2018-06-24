@@ -90,7 +90,7 @@ int API::get_recordSize(const string& tname)
 
 void API::attributeGet(const string& tname, vector<Attribute>* ats)
 {
-	ats = cm->attr(tname);
+	*(ats) = *(cm->attr(tname));
 }
 
 void API::recordIndexDelete(char* rp, int rs, int bo)
