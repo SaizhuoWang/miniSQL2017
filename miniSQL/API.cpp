@@ -1,16 +1,12 @@
 #include "stdafx.h"
 #include "Widget.h"
-API::API(Interpreter* tip, RecordManager* trm, IndexManager* tim,  CatalogManager* tcm):
-	ip(tip),rm(trm),im(tim), cm(tcm)
+
+API::API()
 {
 }
 
 
 API::~API()
-{
-}
-
-API::API()
 {
 }
 
@@ -27,7 +23,7 @@ void API::create_table(const string& tname, const vector<Attribute>* ats)
 
 void API::create_index(const string& iname, const string& tname, const string& aname)
 {
-	if (cm->create_index(iname,tname,aname) /*&& im->create_index(iname,tname,aname)*/)
+	if (cm->create_index(iname,tname,aname) && im->CreateIndex(iname.c_str()))
 		cout << "Create " << iname << " on " << tname << " succeed" << endl;
 	else cout << "Create failed" << endl;
 }
@@ -44,7 +40,7 @@ void API::drop_table(const string& tname)
 
 void API::drop_index(const string& iname)
 {
-	if (cm->drop_index(iname) /*&& im->drop_index(iname)*/)
+	if (cm->drop_index(iname) && im->DropIndex(iname.c_str()))
 		cout << "Drop " << iname << " succeed" << endl;
 	else cout << "Drop failed" << endl;
 }
