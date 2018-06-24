@@ -55,7 +55,7 @@ void API::select(const string& tname, vector<Condition> * res)
 	{
 		as.push_back((*ats)[i].name);
 	}
-	if (rm->show_allrecord(tname, &as, res))return;
+	if (rm->show_allrecord(tname, &as, res)) { cout << "Select succeed " << endl;return; }
 	else cout << "Select failed" << endl;
 }
 
