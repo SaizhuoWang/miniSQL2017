@@ -87,7 +87,7 @@ int Interpreter::check_attr(const vector<Attribute>* ta, const string& aname)
 	int i = 0;
 	for (i = 0;i < (*ta).size();i++)
 	{
-		if (aname.compare((*ta)[i].name))return (*ta)[i].type;
+		if (!aname.compare((*ta)[i].name))return (*ta)[i].type;
 	}
 	return 2;
 }

@@ -90,6 +90,6 @@ public:
 	string value;
 	OPERATOR operate;
 
-	bool isright(string compared, int type);
+	bool isright(char* compared, int type);
 
 };

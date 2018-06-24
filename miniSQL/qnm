@@ -1,4 +1,4 @@
 create table e ( a int );
 insert into e values (1);
-select *  from e;
-quit;
+insert into e values (2);
+select *  from e where a > 1;
