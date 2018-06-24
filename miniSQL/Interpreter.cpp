@@ -61,7 +61,7 @@ bool Interpreter::ctype(const int& t,string& ss)
 	else
 		if (stype >= t) {
 			int offset = stype - t;
-			while (offset--)ss = ss + "\0";
+			while (offset--)ss = ss + " ";
 			return true;
 		}
 		else return false;
