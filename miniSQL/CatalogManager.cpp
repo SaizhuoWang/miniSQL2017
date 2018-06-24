@@ -2,6 +2,11 @@
 #include "Widget.h"
 #pragma warning(disable : 4996)
 
+void CatalogManager::SetBM(BufferManager * bm)
+{
+	this->bm = bm;
+}
+
 CatalogManager::CatalogManager()
 {
 	bm = NULL;

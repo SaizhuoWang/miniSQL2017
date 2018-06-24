@@ -61,7 +61,7 @@ public:
 	bool pin;
 	int byte_used;
 public:
-	Block& operator=(const Block& b);
+	Block & operator=(const Block& b);
 	Block();
 	Block(const string& s);
 };

@@ -34,7 +34,7 @@ string Interpreter::gword(string& s,const string& mark)
 bool Interpreter::ctype(const int& t,string& s)
 {   
 	int stype = 0;
-	if (s.find("\"") != string::npos)stype = -(s.length() - 2);
+	if (s.find("\"") != string::npos)stype = 2-s.length();
 	else if (s.find(".") != string::npos)stype = 1;
 	else stype = 0;
 
@@ -245,7 +245,7 @@ bool Interpreter::syntax()
 			else if (!oper.compare(">"))ope = OPERATOR_MORE;
 			else if (!oper.compare("<="))ope = OPERATOR_LESS_EQUAL;
 			else if (!oper.compare(">="))ope = OPERATOR_MORE_EQUAL;
-			else { cout << oper << " is not legal" << endl;return; }
+			else { cout << oper << " is not legal" << endl;return false; }
 
 			string value = re;
 			if (!ctype(type,value)) 

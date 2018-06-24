@@ -12,6 +12,7 @@ public:
 	CMException(string message) :err_message(message) {};
 };
 
+/*Carries out the work of providing mode data.*/
 class CatalogManager
 {
 private:
@@ -34,7 +35,7 @@ public:
 	CatalogManager(BufferManager& bfm);
 	CatalogManager();
 	~CatalogManager();
-
+	void SetBM(BufferManager *bm);
 	Index* get_index(const string& iname);
 
 	/*

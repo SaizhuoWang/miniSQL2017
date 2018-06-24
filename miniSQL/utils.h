@@ -4,6 +4,7 @@
 #include "RecordManager.h"
 #include "IndexManager.h"
 
+/*The utilities of the program*/
 class Utils
 {
 private:

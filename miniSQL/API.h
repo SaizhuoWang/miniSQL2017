@@ -9,7 +9,7 @@ class API
 {
 public:
 	API();
-    API(Interpreter* tip, RecordManager* trm, /*IndexManager* tim,*/ CatalogManager* tcm);
+	API(Interpreter* tip, RecordManager* trm, IndexManager* tim, CatalogManager* tcm);
 	~API();
 
 	void create_table(const string& tname, const vector<Attribute>* ats);
