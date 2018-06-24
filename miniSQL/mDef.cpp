@@ -169,7 +169,8 @@ bool Condition::isright(char* compared, int type)
 		return mycompare(float_o, float_c, operate);
 		break;
 	default:
-		ss >> string_o >> string_c;
+		string_o = value;
+		string_c = compared;
 		return mycompare(string_o, string_c, operate);
 		break;
 	}
