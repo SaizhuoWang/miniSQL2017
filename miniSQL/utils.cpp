@@ -36,9 +36,9 @@ IndexManager * Utils::GetIndexManager()
 
 int Utils::GetTypeSize(int type)
 {
-	if (type == 0) // Null
+	if (type > 1) // Null
 		return 0;
-	else if (type == 1 || type == 2) // Int or Float
+	else if (type == 0 || type == 1) // Int or Float
 		return 4;
 	else if (type < 0)
 		return -type + 1;

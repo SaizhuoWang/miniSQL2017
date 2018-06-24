@@ -193,12 +193,12 @@ bool Interpreter::syntax()
 	else if (!op.compare("drop")) {
 		string type = gword(s," ");
 		if (!type.compare("table")) {
-			string tname = gword(s," ");
+			string tname = gword(s,";");
 			if (!cm->find_table(tname)) { cout << tname << " does not exist" << endl;return 0; }
 			ap->drop_table(tname);
 		}
 		else if (!type.compare("index")) {
-			string iname = gword(s," ");
+			string iname = gword(s,";");
 			if (!cm->find_index(iname)) { cout << iname << " does not exist" << endl;return 0; }
 			ap->drop_index(iname);
 		}
