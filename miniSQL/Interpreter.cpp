@@ -27,6 +27,7 @@ void Interpreter::fread(ifstream& rin)
 	s.clear();
 	char c;
 	do {
+		if (rin.eof())return;
 		c = rin.get();
 		if(c!='\n') s = s + c;
 	} while (c != ';');
@@ -118,7 +119,7 @@ bool Interpreter::syntax()
 
 					if (att.find("primary") == string::npos) {
 						Attribute at;
-						at.primary = false;at.unique = false;
+						//at.primary = false;at.unique = false;
 						at.name = att.substr(0, att.find_first_of(" "));
 						if (att.find("unique") != string::npos)at.unique = true;
 						if (att.find("int") != string::npos)at.type = 0;
