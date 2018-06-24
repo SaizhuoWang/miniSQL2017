@@ -46,7 +46,12 @@ bool Interpreter::ctype(const int& t,string& ss)
 {   
 	int stype = 0;
 	int len = ss.length();
-	if (ss.find("\"") != string::npos)stype = -(len - 2);
+	if (ss.find("\"") != string::npos)
+	{
+		stype = -(len - 2);
+		ss.erase(0, 1);
+		ss.erase(0, ss.find_first_of("\""));
+	}
 	else if (ss.find(".") != string::npos)stype = 1;
 	else stype = 0;
 
