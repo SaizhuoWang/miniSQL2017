@@ -118,6 +118,7 @@ bool Interpreter::syntax()
 
 					if (att.find("primary") == string::npos) {
 						Attribute at;
+						at.primary = false;at.unique = false;
 						at.name = att.substr(0, att.find_first_of(" "));
 						if (att.find("unique") != string::npos)at.unique = true;
 						if (att.find("int") != string::npos)at.type = 0;
@@ -286,9 +287,12 @@ bool Interpreter::syntax()
 		ifstream fin(fname);
 		fread(fin);
 		bool quit = 0;
-		while (!fin.eof()&&!quit) { quit = syntax();fread(fin); }
-		if (quit)return 1;
-		else return 0;
+		while (!fin.eof()&&!quit) 
+		{ 
+			quit = syntax();
+			if(!fin.eof())fread(fin); 
+		}
+	    return 0;
 	}	
 	else {
 		cout << "Not a legal instruction" << endl; return 0;
