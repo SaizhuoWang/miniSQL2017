@@ -15,27 +15,21 @@ Interpreter::~Interpreter()
 void Interpreter::read()
 {
 	s.clear();
-	string temp;
-	cin >> temp;
-	while (temp[temp.length() - 1] != ';')
-	{
-		s = s + temp + " ";
-		cin >> temp;
-	}
-	s = s + temp + " ";
+	char c;
+	do {
+		c = cin.get();
+		if(c!='\n')s = s + c;
+	} while (c != ';');
 }
 
 void Interpreter::fread(ifstream& rin)
 {   
 	s.clear();
-	string temp;
-	rin >> temp;
-	while (temp[temp.length() - 1] != ';') 
-	{
-		s = s + temp + " ";
-		rin >> temp;	
-	} 
-	s = s + temp + " ";
+	char c;
+	do {
+		c = rin.get();
+		if(c!='\n') s = s + c;
+	} while (c != ';');
 }
 
 string Interpreter::gword(string& s,const string& mark)
@@ -105,8 +99,7 @@ bool Interpreter::syntax()
 
 		if (!type.compare("table")) {
 			string tname = gword(s," ");
-			/*cout << tname << endl;
-			cout << cm->find_table(tname) << endl;return 0;*/
+			
 			if (cm->find_table(tname)) {cout << "Table name is duplicated" << endl;return 0 ;}
 			else {
 				if (s[0] != '(') { cout << "'(' is absent after table's name" << endl;return 0 ; }
@@ -263,7 +256,7 @@ bool Interpreter::syntax()
 			else if (!oper.compare(">"))ope = OPERATOR_MORE;
 			else if (!oper.compare("<="))ope = OPERATOR_LESS_EQUAL;
 			else if (!oper.compare(">="))ope = OPERATOR_MORE_EQUAL;
-			else { cout << oper << " is not legal" << endl;return false; }
+			else { cout << oper << " is not legal" << endl;return 0 ; }
 
 			string value = re;
 			if (!ctype(type,value)) 
