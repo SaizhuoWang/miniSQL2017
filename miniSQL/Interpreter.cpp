@@ -324,13 +324,17 @@ bool Interpreter::syntax()
 	}
 	else if (!op.compare("execfile")) {
 		string fname = gword(s, ";");
+		FILE* fp;
+		fp = fopen(fname.c_str(), "r");
+		if (!fp) { cout << fname << " does not exist" << endl;return 0; }
+
 		ifstream fin(fname);
-		
 		bool quit = 0;
 		do {
 			if(fread(fin))quit = syntax();
 			else break;
 		} while (!fin.eof() && !quit);
+		fin.close();
 	    return 0;
 	}	
 	else {
