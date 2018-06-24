@@ -124,6 +124,7 @@ bool Interpreter::syntax()
 				int over = 0;
 				string att;vector<Attribute> ats;
 				while (1) {
+					s.erase(0, s.find_first_not_of("\t"));
 					s.erase(0, s.find_first_not_of(" "));
 					if (s.find(",")!=string::npos) 
 						att = gword(s, ",");
