@@ -93,12 +93,49 @@ void API::attributeGet(const string& tname, vector<Attribute>* ats)
 	*(ats) = *(cm->attr(tname));
 }
 
-void API::recordIndexDelete(char* rp, int rs, int bo)
+void API::recordIndexDelete(const char* value, const string& tname)
 {
-	cout << "index delete" << endl;
+	vector<Index>* vi = cm->idx(tname);
+	vector<Attribute>* ats = cm->attr(tname);
+	int i;
+	for (i = 0;i < vi->size();i++)
+	{
+		string key = gkey(ats,(*vi)[i].attr->name, value);
+		im->Remove((*vi)[i].name.c_str(), key.c_str());
+	}
 }
 
-void API::recordAddIndex(char* rp, int rs, int bo)
+void API::recordAddIndex(const char* value, const string& tname, const int& offset)
 {
-	cout << "index add" << endl;
+	vector<Index>* vi = cm->idx(tname);
+	vector<Attribute>* ats = cm->attr(tname);
+	int i;
+	for (i = 0;i < vi->size();i++)
+	{
+		string key = gkey(ats, (*vi)[i].attr->name, value);
+		im->Insert((*vi)[i].name.c_str(), key.c_str(),offset);	
+	}
+}
+
+string API::gkey(const vector<Attribute>* ats, const string& idx, const char* value)
+{
+	int i;int pos = 0;int ty;
+	for (i = 0;i < ats->size();i++)
+	{
+		if (!idx.compare((*ats)[i].name)) 
+		{
+			ty = (*ats)[i].type;break;
+		}
+		else if ((*ats)[i].type == 0 || (*ats)[i].type == 1) pos += 4;
+		else { pos += (-(*ats)[i].type); }
+	}
+
+	if (ty == 0 || ty == 1)ty = 4;
+	else ty = -ty;
+	string key;
+	for (i = 0;i < ty;i++)
+	{
+		key = key + value[pos + i];
+	}
+	return key;
 }

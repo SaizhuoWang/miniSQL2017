@@ -21,8 +21,10 @@ public:
 
 	int get_recordSize(const string& tname);
 	void attributeGet(const string& tname, vector<Attribute>* ats);
-	void recordIndexDelete(char* rp, int rs, int bo);
-	void recordAddIndex(char* rp, int rs, int bo);
+	void recordIndexDelete(const char* value, const string& tname);
+	void recordAddIndex(const char* value, const string& tname, const int& offset);
+
+	string gkey(const vector<Attribute>* ats, const string& idx, const char* value);
 
 	Interpreter * ip;
 	RecordManager * rm;
