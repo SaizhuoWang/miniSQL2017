@@ -61,7 +61,7 @@ bool Interpreter::ctype(const int& t,string& ss)
 	else
 		if (stype >= t) {
 			int offset = stype - t;
-			while (offset--)ss = ss + " ";
+			while (offset--)ss = ss + "\0";
 			return true;
 		}
 		else return false;
@@ -80,6 +80,7 @@ void Interpreter::value(char* dest, const vector<string>* source, const vector<A
 			ss >> a;
 			memcpy(dest, &a, sizeof(a));
 			dest += sizeof(a);
+			ss.clear();
 		}
 		else if ((*ats)[i].type == 1)
 		{
@@ -87,6 +88,7 @@ void Interpreter::value(char* dest, const vector<string>* source, const vector<A
 			//printf("%X", *(int*)&b);
 			memcpy(dest,&b,sizeof(float));
 			dest += sizeof(b);
+			ss.clear();
 		}
 		else {
 			for (int j = 0; j < (*source)[i].length(); j++)
@@ -125,6 +127,8 @@ bool Interpreter::syntax()
 				int over = 0;
 				string att;vector<Attribute> ats;
 				while (1) {
+					s.erase(0, s.find_first_not_of(" "));
+					s.erase(0, s.find_first_not_of("\t"));
 					s.erase(0, s.find_first_not_of(" "));
 					if (s.find(",")!=string::npos) 
 						att = gword(s, ",");
@@ -192,12 +196,12 @@ bool Interpreter::syntax()
 	else if (!op.compare("drop")) {
 		string type = gword(s," ");
 		if (!type.compare("table")) {
-			string tname = gword(s," ");
+			string tname = gword(s,";");
 			if (!cm->find_table(tname)) { cout << tname << " does not exist" << endl;return 0; }
 			ap->drop_table(tname);
 		}
 		else if (!type.compare("index")) {
-			string iname = gword(s," ");
+			string iname = gword(s,";");
 			if (!cm->find_index(iname)) { cout << iname << " does not exist" << endl;return 0; }
 			ap->drop_index(iname);
 		}
