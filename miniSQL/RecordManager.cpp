@@ -5,7 +5,7 @@
 #include "utils.h"
 #include <iostream>
 #include <cstring>
-
+#pragma warning(disable : 4996)
 extern int offset;
 
 RecordManager::RecordManager(API *parent)
@@ -93,7 +93,7 @@ bool RecordManager::insert_record(string tableName, char * record, int recordSiz
  */
 char * RecordManager::get_recordpoint(Block & current_block, int offset)
 {
-	return ((char*)(&current_block.content[0] + offset));
+	return ((char*)&current_block.content[offset]);
 }
 
 /** 
@@ -396,21 +396,24 @@ index_param RecordManager::find_record(string tableName)
 	index_param index_need;
 	char * content = new char[recordSize];
 	int all_size = current_block->byte_used;
-	char * contentBegin;
-
-	while (offset + recordSize <= all_size)
+	Byte * contentBegin;
+	//if the block is empty, just return
+	if (all_size == 0)
 	{
-		//if the block is empty, just return
-		if (all_size == 0)
-		{
-			index_need.r_offset = -1;
-			index_need.r_point = NULL;
-			return index_need;
-		}
+		index_need.r_offset = -1;
+		index_need.r_point = NULL;
+		return index_need;
+	}
+	while (offset + recordSize <= all_size)
+	{	
 		if (offset + recordSize < all_size)
 		{
-			contentBegin = get_recordpoint(*current_block, offset);
-			memcpy(content, contentBegin, recordSize);
+			contentBegin = (Byte*)get_recordpoint(*current_block, offset);
+			memcpy((void*)content, (void*)contentBegin, recordSize);
+			/*for (int i = 0; i < recordSize; i++)
+			{
+				content[i] = (char)contentBegin[i];
+			}*/
 			index_need.r_offset = offset;
 			index_need.r_point = content;
 			offset += recordSize;

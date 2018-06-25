@@ -188,18 +188,24 @@ void BPTree::updateHeader()
 bool BPTree::CreateFile(const char *filename, int keyLength)
 {
 	BufferManager *bm = Utils::GetBufferManager();
-	FILE* file = fopen(filename, "wb");
+	Block b;
+	bm->CreateFile(filename);
+	strcpy(b.file_name, filename);
+	b.tag = 0;
+	b.byte_used = 20;
 	int header[] = { (BLOCK_SIZE - 8) / (keyLength + 4) + 1, keyLength, 0, -1, -1 };
-	fwrite(header, 4, 5, file);
-	fclose(file);
+	memcpy(b.content, header, 20);
+	bm->WriteBlock(b);
 	return true;
 }
 
-BPTree::BPTree(const char *filename) :filename(filename)
+BPTree::BPTree(const char *filename_)
 {
 	BufferManager *bm = Utils::GetBufferManager();
-	Block *header = bm->FetchBlock(filename, 0);
-
+	this->filename = new char[strlen(filename_) + 1];
+	memcpy(this->filename, filename_, strlen(filename_));
+	this->filename[strlen(filename_)] = 0;
+	Block *header = bm->FetchBlock(filename_, 0);
 	int *headerArray = reinterpret_cast<int *>(header->content);
 	order = headerArray[0];
 	keyLength = headerArray[1];

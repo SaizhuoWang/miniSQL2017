@@ -4,7 +4,7 @@
 class BPTree
 {
 private:
-	const char *filename;
+	char *filename;
 	// Order of the tree
 	int order;
 
@@ -34,7 +34,7 @@ public:
 	// Create a file for a B+ Tree
 	static bool CreateFile(const char *filename, int keyLength);
 
-	BPTree(const char *filename);
+	BPTree(const char *filename_);
 	~BPTree();
 
 	// Find the value of certain key
