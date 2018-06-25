@@ -63,7 +63,7 @@ bool Interpreter::ctype(const int& t,string& ss)
 	else stype = 0;
 
 	if (stype >= 0)
-		if (stype == t)return true;
+		if (stype <= t)return true;
 		else return false;
 	else
 		if (stype >= t) {
