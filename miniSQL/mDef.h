@@ -34,6 +34,7 @@ public:
 public:
 	string table_name, name;
 	Attribute *attr;
+	bool operator==(const Index& i);
 };
 
 class Table
