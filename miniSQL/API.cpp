@@ -25,8 +25,12 @@ void API::create_table(const string& tname, const vector<Attribute>* ats)
 
 void API::create_index(const string& iname, const string& tname, const string& aname)
 {
-	if (cm->create_index(iname,tname,aname) && im->CreateIndex(iname.c_str()))
+	if (cm->create_index(iname, tname, aname) && im->CreateIndex(iname.c_str()))
+	{
+
 		cout << "Create " << iname << " on " << tname << " succeed" << endl;
+	}
+		
 	else cout << "Create failed" << endl;
 }
 
