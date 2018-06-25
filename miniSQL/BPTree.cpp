@@ -7,9 +7,6 @@
 // Returns -1 when not found.
 int BPTree::find(int id)
 {
-	if (id < 0) {
-		return -1;
-	}
 	BPTreeNode *node = new BPTreeNode(filename, id, keyLength);
 	int pos = node->FindPosition(key);
 
@@ -34,22 +31,23 @@ int BPTree::find(int id)
 // Returns 1 to add new node, and -1 when failed.
 int BPTree::add(int id)
 {
-	if (id < 0) {
-		return 1;
-	}
 	BPTreeNode *node = new BPTreeNode(filename, id, keyLength);
 	int pos = node->FindPosition(key);
 
-	int s = node->IsLeaf() ? 1 : add(node->GetPointer(pos));
-
+	int res = node->IsLeaf() ? 1 : add(node->GetPointer(pos));
+	int s = 0;
 	if (node->IsLeaf() && pos > 0)
 	{
 		const char *k = node->GetKey(pos);
 		if (memcmp(key, k, keyLength) == 0)
-			s = -1;
+			res = -1;
 	}
 
-	if (s == 1)
+	if (res == -1)
+	{
+		s = -1;
+	}
+	if (res == 1)
 	{
 		node->Insert(pos, key, value);
 		if (node->GetSize() >= order)
@@ -58,6 +56,7 @@ int BPTree::add(int id)
 			BPTreeNode *newNode = node->Split(newId, key);
 			value = newId;
 			delete newNode;
+			s = 1;
 		}
 	}
 
@@ -68,9 +67,6 @@ int BPTree::add(int id)
 // Returns -1 when failed, 1 to remove, 2 to change key
 int BPTree::remove(int id, int siblingId, bool isLeftSibling, const char *parentKey)
 {
-	if (id < 0) {
-		return false;
-	}
 	BPTreeNode* node = new BPTreeNode(filename, id, keyLength);
 	BPTreeNode* sibling = NULL;
 	if (id != root)
@@ -156,11 +152,11 @@ int BPTree::remove(int id, int siblingId, bool isLeftSibling, const char *parent
 int BPTree::getFirstEmpty()
 {
 	if (firstEmpty < 0)
-		return ++nodeCount;
+		return (++nodeCount) * BLOCK_SIZE;
 
 	int s = firstEmpty;
 	BufferManager *bm = Utils::GetBufferManager();
-	Block *block = bm->FetchBlock(filename, firstEmpty*BLOCK_SIZE);
+	Block *block = bm->FetchBlock(filename, firstEmpty);
 	firstEmpty = *(reinterpret_cast<int*>(block->content));
 	return s;
 }
@@ -168,7 +164,7 @@ int BPTree::getFirstEmpty()
 void BPTree::removeBlock(int id)
 {
 	BufferManager *bm = Utils::GetBufferManager();
-	Block *block = bm->FetchBlock(filename, id*BLOCK_SIZE);
+	Block *block = bm->FetchBlock(filename, id);
 	memcpy(block->content, &firstEmpty, 4);
 	firstEmpty = id;
 }
@@ -225,14 +221,14 @@ BPTree::~BPTree()
 int BPTree::Find(const char *key)
 {
 	memcpy(this->key, key, keyLength);
-	return find(root);
+	return root < 0 ? -1 : find(root);
 }
 
 bool BPTree::Add(const char *key, int value)
 {
 	memcpy(this->key, key, keyLength);
 	this->value = value;
-	int t = add(root);
+	int t = root < 0 ? 1 : add(root);
 
 	if (t == 1)
 	{
@@ -250,6 +246,9 @@ bool BPTree::Add(const char *key, int value)
 bool BPTree::Remove(const char *key)
 {
 	memcpy(this->key, key, keyLength);
+	if (root < 0) {
+		return false;
+	}
 	int t = remove(root, 0, true, NULL);
 	updateHeader();
 	return t != -1;

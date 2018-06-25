@@ -18,6 +18,11 @@ int IndexManager::Find(const char *indexName, const char *key)
 
 bool IndexManager::Insert(const char *indexName, const char *key, int value)
 {
+	/*const uint32_t p = *reinterpret_cast<const uint32_t *>(key);
+	cout << p << endl;
+	if (value == 19824) {
+		cout << 123;
+	}*/
 	BPTree *tree = new BPTree(getTreeFilename(indexName).c_str());
 	if (!tree->Add(key, value))
 	{
