@@ -163,10 +163,10 @@ bool CatalogManager::create_table(const string & table_name, const vector<Attrib
 	if (tables->find(table_name) != tables->end())
 		return false;
 	Table *tbl = new Table(table_name, *attri);//Create a table object.
-	Index *idx = new Index(table_name, table_name, tbl->attributes->at(tbl->primary_key_index));
-	tbl->indices->push_back(*idx);//Push the automatically create index on primary key attribute to the index vector.
-	WriteIndexToCatalogFile(*idx);//Write the index catalog back to the buffer.
-	indices->insert(pair <string, Index*>(idx->name, idx));
+	//Index *idx = new Index(table_name, table_name, tbl->attributes->at(tbl->primary_key_index));
+	//tbl->indices->push_back(*idx);//Push the automatically create index on primary key attribute to the index vector.
+	//WriteIndexToCatalogFile(*idx);//Write the index catalog back to the buffer.
+	//indices->insert(pair <string, Index*>(idx->name, idx));
 	tables->insert(pair<string, Table*>(table_name, tbl));
 	WriteTableToCatalogFile(*tbl);//Write the table back to the buffer.
 	return true;
