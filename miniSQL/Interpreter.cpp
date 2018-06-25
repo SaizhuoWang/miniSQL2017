@@ -63,7 +63,7 @@ bool Interpreter::ctype(const int& t,string& ss)
 	else stype = 0;
 
 	if (stype >= 0)
-		if (stype == t)return true;
+		if (stype <= t)return true;
 		else return false;
 	else
 		if (stype >= t) {
@@ -153,7 +153,7 @@ bool Interpreter::syntax()
 					}
 					string pk = att.substr(att.find("(") + 1, att.find(")") - att.find("(") - 1);
 					for (int i = 0;i<ats.size();i++)
-						if (!pk.compare(ats[i].name)) { ats[i].primary = true;break; }
+						if (!pk.compare(ats[i].name)) { ats[i].primary = true;ats[i].unique = true;break; }
 
 					if (over) { ap->create_table(tname, &ats);return 0; }
 				}
@@ -164,7 +164,10 @@ bool Interpreter::syntax()
 						
 						at.name = att.substr(0, att.find_first_of(" "));
 						if (att.find("unique") != string::npos)at.unique = true;
-						if (att.find("primary key") != string::npos)at.primary = true;
+						if (att.find("primary key") != string::npos) 
+						{
+							at.primary = true;at.unique = true;
+						}
 						if (att.find("int") != string::npos)at.type = 0;
 						else if (att.find("float") != string::npos)at.type = 1;
 						else if (att.find("char") != string::npos) {

@@ -19,14 +19,25 @@ void API::create_table(const string& tname, const vector<Attribute>* ats)
 		rm->create_table(tname);
 		cout << "Create " << tname << " succeed" << endl;
 	}
-		
 	else cout << "Create failed" << endl;
+
+	int i;
+	for (i = 0;i < ats->size();i++)
+	{
+		if ((*ats)[i].primary)
+		{
+			create_index(tname+"_"+(*ats)[i].name, tname, (*ats)[i].name);
+			break;
+		}
+	}
 }
 
 void API::create_index(const string& iname, const string& tname, const string& aname)
 {
 	vector<Attribute>* ats = cm->attr(tname);
-	if (cm->create_index(iname, tname, aname) && im->CreateIndex(iname.c_str()))
+	bool cc = cm->create_index(iname, tname, aname);
+	bool ii = im->CreateIndex(iname.c_str());
+	if (cc && ii)
 	{
 		struct index_return ir;
 		while(1){
@@ -41,7 +52,7 @@ void API::create_index(const string& iname, const string& tname, const string& a
 		cout << "Create " << iname << " on " << tname << " succeed" << endl;
 	}
 		
-	else cout << "Create failed" << endl;
+	else cout << "Create index failed" << endl;
 }
 
 void API::drop_table(const string& tname)
@@ -116,7 +127,7 @@ void API::recordIndexDelete(const char* value, const string& tname)
 	{
 		string key = gkey(ats,(*vi)[i].attr->name, value);
 		if(im->Remove((*vi)[i].name.c_str(), key.c_str()))
-			cout << "Index '" << (*vi)[i].name << "' is updated successfully" << endl;;
+			cout << "Index '" << (*vi)[i].name << "' is updated successfully" << endl;
 	}
 }
 
