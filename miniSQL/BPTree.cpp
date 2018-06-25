@@ -160,7 +160,7 @@ int BPTree::getFirstEmpty()
 
 	int s = firstEmpty;
 	BufferManager *bm = Utils::GetBufferManager();
-	Block *block = bm->FetchBlock(filename, firstEmpty);
+	Block *block = bm->FetchBlock(filename, firstEmpty*BLOCK_SIZE);
 	firstEmpty = *(reinterpret_cast<int*>(block->content));
 	return s;
 }
@@ -168,7 +168,7 @@ int BPTree::getFirstEmpty()
 void BPTree::removeBlock(int id)
 {
 	BufferManager *bm = Utils::GetBufferManager();
-	Block *block = bm->FetchBlock(filename, id);
+	Block *block = bm->FetchBlock(filename, id*BLOCK_SIZE);
 	memcpy(block->content, &firstEmpty, 4);
 	firstEmpty = id;
 }

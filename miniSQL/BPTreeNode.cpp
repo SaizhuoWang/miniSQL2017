@@ -5,7 +5,7 @@
 BPTreeNode::BPTreeNode(const char * filename, int id, int keyLength) :filename(filename), id(id), keyLength(keyLength)
 {
 	BufferManager *bm = Utils::GetBufferManager();
-	Block* block = bm->FetchBlock(filename, id);
+	Block* block = bm->FetchBlock(filename, id*BLOCK_SIZE);
 	int *data = reinterpret_cast<int *>(block->content);
 
 	size = data[0];
@@ -39,7 +39,7 @@ BPTreeNode::~BPTreeNode()
 	if (dirty && !blockRemoved)
 	{
 		BufferManager* bm = Utils::GetBufferManager();
-		Block* block = bm->FetchBlock(filename, id);
+		Block* block = bm->FetchBlock(filename, id*BLOCK_SIZE);
 		Byte *data = block->content;
 
 		memcpy(data, &size, 4);
@@ -64,7 +64,7 @@ BPTreeNode::~BPTreeNode()
 
 size_t BPTreeNode::FindPosition(const char *key) const
 {
-	vector<char *>::const_iterator it, first = keys.begin();
+	vector<char *>::const_iterator it, first = keys.begin()+1;
 	ptrdiff_t count, step;
 	count = keys.end() - (keys.begin() + 1);
 
