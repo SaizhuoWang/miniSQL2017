@@ -5,22 +5,22 @@
 BPTreeNode::BPTreeNode(const char * filename, int id, int keyLength) :filename(filename), id(id), keyLength(keyLength)
 {
 	BufferManager *bm = Utils::GetBufferManager();
-	Block* block = bm->FetchBlock(filename, id*BLOCK_SIZE);
-	int *data = reinterpret_cast<int *>(block->content);
+	Block* block = bm->FetchBlock(filename, id);
+	char *data = reinterpret_cast<char *>(block->content);
 
-	size = data[0];
+	size = *(reinterpret_cast<int *>(data));
 	keys.push_back(NULL);
-	pointers.push_back(data[1]);
+	pointers.push_back(*(reinterpret_cast<int *>(data + 4)));
 	leaf = pointers[0] < 0;
 	blockRemoved = false;
 
 	int j = 8;
-	for (int i = 1; i <= size; i++)
+	for (int i = 0; i < size; i++)
 	{
 		char *key = new char[keyLength];
-		memcpy(key, block->content + j, keyLength);
+		memcpy(key, data + j, keyLength);
 		keys.push_back(key);
-		pointers.push_back(*reinterpret_cast<int*>(block->content + j + keyLength));
+		pointers.push_back(*reinterpret_cast<int*>(data + j + keyLength));
 		j += keyLength + 4;
 	}
 }
@@ -39,8 +39,8 @@ BPTreeNode::~BPTreeNode()
 	if (dirty && !blockRemoved)
 	{
 		BufferManager* bm = Utils::GetBufferManager();
-		Block* block = bm->FetchBlock(filename, id*BLOCK_SIZE);
-		Byte *data = block->content;
+		Block* block = bm->FetchBlock(filename, id);
+		char *data = reinterpret_cast<char *>(block->content);
 
 		memcpy(data, &size, 4);
 
@@ -64,22 +64,10 @@ BPTreeNode::~BPTreeNode()
 
 size_t BPTreeNode::FindPosition(const char *key) const
 {
-	vector<char *>::const_iterator it, first = keys.begin()+1;
-	ptrdiff_t count, step;
-	count = keys.end() - (keys.begin() + 1);
-
-	while (count > 0) {
-		it = first;
-		step = count / 2;
-		std::advance(it, step);
-		if (memcmp(key, *it, keyLength) >= 0) {
-			first = ++it;
-			count -= step + 1;
-		}
-		else
-			count = step;
-	}
-	return first - (keys.begin() + 1);
+	return upper_bound(
+		keys.begin() + 1, keys.end(), key,
+		[&](const char* a, const char* b) { return memcmp(a, b, keyLength) < 0; }
+	) - (keys.begin() + 1);
 }
 
 bool BPTreeNode::IsLeaf() const

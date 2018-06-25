@@ -395,17 +395,17 @@ index_param RecordManager::find_record(string tableName)
 	Block * current_block = bm->FetchBlock(recordFileName, offset);
 	index_param index_need;
 	char * content = new char[recordSize];
-	int all_size = current_block->byte_used;
+	int all_size = offset - (offset % BLOCK_SIZE) + current_block->byte_used;
 	Byte * contentBegin;
 	//if the block is empty, just return
-	if (all_size == 0)
+	if (current_block->byte_used == 0)
 	{
 		index_need.r_offset = -1;
 		index_need.r_point = NULL;
 		return index_need;
 	}
 	while (offset + recordSize <= all_size)
-	{	
+	{
 		if (offset + recordSize < all_size)
 		{
 			contentBegin = (Byte*)get_recordpoint(*current_block, offset);
@@ -428,5 +428,11 @@ index_param RecordManager::find_record(string tableName)
 			all_size += BLOCK_SIZE - res2;
 			all_size += current_block->byte_used;
 		}
+	}
+	if (current_block->byte_used == 0)
+	{
+		index_need.r_offset = -1;
+		index_need.r_point = NULL;
+		return index_need;
 	}
 }
