@@ -22,7 +22,7 @@ Block & Block::operator=(const Block & b)
 	return *this;
 }
 
-Block::Block(const string & s):byte_used(s.size()),dirty(false),tag(-1),pin(false)
+Block::Block(const string & s) :byte_used(s.size()), dirty(false), tag(-1), pin(false)
 {
 	memcpy(content, s.c_str(), s.size());
 	file_name = new char[MAX_FILENAME_LENGTH];
@@ -58,6 +58,12 @@ Index::Index(const Index & idx)
 Index::~Index()
 {
 	delete attr;
+}
+
+bool Index::operator==(const Index & i)
+{
+	if (this->name == i.name) return true;
+	return false;
 }
 
 Table::Table()

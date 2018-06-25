@@ -118,7 +118,7 @@ void CatalogManager::WriteTableToCatalogFile(const Table & t)
 	bm->WriteBlock(b);
 }
 
-void CatalogManager::ReadTableFromCatalogFile(Table *t,Block & b)
+void CatalogManager::ReadTableFromCatalogFile(Table *t, Block & b)
 {
 	Byte* ptr = b.content;
 	t->name = (char*)ptr;
@@ -126,9 +126,9 @@ void CatalogManager::ReadTableFromCatalogFile(Table *t,Block & b)
 	int atr_cnt, pk_idx, idx_cnt;
 	atr_cnt = *(int*)ptr;
 	ptr += sizeof(int);
-	pk_idx= *(int*)ptr;
+	pk_idx = *(int*)ptr;
 	ptr += sizeof(int);
-	idx_cnt= *(int*)ptr;
+	idx_cnt = *(int*)ptr;
 	ptr += sizeof(int);
 	t->primary_key_index = pk_idx;
 	for (int i = 0; i < atr_cnt; i++)
@@ -191,7 +191,7 @@ bool CatalogManager::create_index(const string & iname, const string & tname, co
 	}
 	else//The table is not in the buffer.
 	{
-		Table *cur_table=new Table;
+		Table *cur_table = new Table;
 		Block b = *(bm->FetchBlock(tname + ".tlog", 0));
 		ReadTableFromCatalogFile(cur_table, b);
 		int atr_idx = FindAttribute(*cur_table, aname);
@@ -219,7 +219,7 @@ bool CatalogManager::find_table(const string & table_name)
 		return false;
 	return true;
 }
- 
+
 bool CatalogManager::find_index(const string & index_name)
 {
 	string filename(index_name + ".ilog");
@@ -234,7 +234,7 @@ bool CatalogManager::find_index(const string & index_name)
 	return true;
 }
 
-int CatalogManager::FindAttribute(const Table & t,const string &aname)
+int CatalogManager::FindAttribute(const Table & t, const string &aname)
 {
 	for (int i = 0; i < (int)t.attributes->size(); i++)
 	{
@@ -307,8 +307,8 @@ bool CatalogManager::drop_table(const string & table_name)
 bool CatalogManager::drop_index(const string & index_name)
 {
 	if (!find_index(index_name)) return false;
-	Block *idx_blk=bm->FetchBlock(index_name + ".ilog", 0);
-	Index *idx=new Index;
+	Block *idx_blk = bm->FetchBlock(index_name + ".ilog", 0);
+	Index *idx = new Index;
 	ReadIndexFromBytePtr(idx, idx_blk->content);
 	Table *this_table;
 	if (tables->find(idx->table_name) != tables->end())
@@ -323,15 +323,21 @@ bool CatalogManager::drop_index(const string & index_name)
 		tables->insert(pair<string, Table*>(idx->table_name, this_table));
 	}
 	int ii = 0;
-	for (auto i = this_table->indices->begin(); i != this_table->indices->end(); i++)
+	/*for (auto i = this_table->indices->begin(); i != this_table->indices->end(); i++)
 	{
 		if (this_table->indices->at(ii).name == idx->name)
 		{
-			this_table->indices->erase(i);
+			i=this_table->indices->erase(i);
+			
 			break;
 		}
 		ii++;
-	}
+	}*/
+	std::remove(this_table->indices->begin(), this_table->indices->end(), *idx);
+	int i = this_table->indices->size() - 1;
+	Attribute* tmp = new Attribute(*(this_table->indices->at(i).attr));
+	this_table->indices->pop_back();
+	this_table->indices->at(this_table->indices->size() - 1).attr = tmp;
 	indices->erase(idx->name);
 	WriteTableToCatalogFile(*this_table);
 	bm->DeleteFile(index_name + ".ilog");
