@@ -145,11 +145,25 @@ bool Interpreter::syntax()
 					else { cout << "Absence of ',' or ')'" << endl; return 0; }
 					string tat = att;
 
-					if (att.find("primary") == string::npos) {
+				if(att.find("primary key") != string::npos && att.find("(")!= string::npos)
+				{
+					if (att.find(")") == string::npos)
+					{
+						cout << "Syntax is wrong at primary key" << endl;return 0;
+					}
+					string pk = att.substr(att.find("(") + 1, att.find(")") - att.find("(") - 1);
+					for (int i = 0;i<ats.size();i++)
+						if (!pk.compare(ats[i].name)) { ats[i].primary = true;break; }
+
+					if (over) { ap->create_table(tname, &ats);return 0; }
+				}
+				else
+				{
 						Attribute at;
 						//at.primary = false;at.unique = false;
 						at.name = att.substr(0, att.find_first_of(" "));
 						if (att.find("unique") != string::npos)at.unique = true;
+						if (att.find("primary key") != string::npos)at.primary = true;
 						if (att.find("int") != string::npos)at.type = 0;
 						else if (att.find("float") != string::npos)at.type = 1;
 						else if (att.find("char") != string::npos) {
@@ -167,15 +181,7 @@ bool Interpreter::syntax()
 						if (over) { ap->create_table(tname, &ats);return 0; }
 					}
 					//primary key
-					else {
-						if (att.find("key(") == string::npos) 
-						{ cout << "Syntax is wrong at primary key" << endl;return 0; }
-						string pk = att.substr(att.find("(") + 1, att.find(")") - att.find("(") - 1);
-						for(int i=0;i<ats.size();i++)
-							if (!pk.compare(ats[i].name)) { ats[i].primary = true;break; }
-
-						if (over) { ap->create_table(tname, &ats);return 0; }
-					}
+					
 				}
 			}
 		}
