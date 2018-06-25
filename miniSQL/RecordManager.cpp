@@ -42,7 +42,7 @@ void RecordManager::create_table(string tableName)
 void RecordManager::delete_table(string tableName)
 {
 	string recordFileName = record_filename(tableName);
-	cout << recordFileName;
+	//cout << recordFileName;
 	bm->DeleteFile(recordFileName);
 }
 

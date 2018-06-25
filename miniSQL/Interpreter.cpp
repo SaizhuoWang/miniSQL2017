@@ -160,7 +160,8 @@ bool Interpreter::syntax()
 				else
 				{
 						Attribute at;
-						//at.primary = false;at.unique = false;
+						at.primary = false;at.unique = false;
+						
 						at.name = att.substr(0, att.find_first_of(" "));
 						if (att.find("unique") != string::npos)at.unique = true;
 						if (att.find("primary key") != string::npos)at.primary = true;

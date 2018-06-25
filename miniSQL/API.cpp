@@ -115,7 +115,8 @@ void API::recordIndexDelete(const char* value, const string& tname)
 	for (i = 0;i < vi->size();i++)
 	{
 		string key = gkey(ats,(*vi)[i].attr->name, value);
-		im->Remove((*vi)[i].name.c_str(), key.c_str());
+		if(im->Remove((*vi)[i].name.c_str(), key.c_str()))
+			cout << "Index '" << (*vi)[i].name << "' is updated successfully" << endl;;
 	}
 }
 
@@ -127,7 +128,8 @@ void API::recordAddIndex(const char* value, const string& tname, const int& offs
 	for (i = 0;i < vi->size();i++)
 	{
 		string key = gkey(ats, (*vi)[i].attr->name, value);
-		im->Insert((*vi)[i].name.c_str(), key.c_str(),offset);	
+		if(im->Insert((*vi)[i].name.c_str(), key.c_str(),offset))
+			cout << "Index '"<< (*vi)[i].name << "' is updated successfully" << endl;	
 	}
 }
 
