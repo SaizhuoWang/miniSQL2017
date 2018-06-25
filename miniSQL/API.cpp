@@ -25,9 +25,19 @@ void API::create_table(const string& tname, const vector<Attribute>* ats)
 
 void API::create_index(const string& iname, const string& tname, const string& aname)
 {
+	vector<Attribute>* ats = cm->attr(tname);
 	if (cm->create_index(iname, tname, aname) && im->CreateIndex(iname.c_str()))
 	{
-
+		struct index_return ir;
+		while(1){
+			ir = rm->find_record(tname);
+			if (ir.r_offset < 0)break;
+			else
+			{
+				string key = gkey(ats, aname, ir.r_point);
+				im->Insert(iname.c_str(), key.c_str(), ir.r_offset);
+			}
+		}
 		cout << "Create " << iname << " on " << tname << " succeed" << endl;
 	}
 		
