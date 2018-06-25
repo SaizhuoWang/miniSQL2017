@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "utils.h"
 #include "Widget.h"
-
+extern int offset;
 API::API()
 {
 	

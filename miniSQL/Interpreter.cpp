@@ -37,8 +37,15 @@ bool Interpreter::fread(ifstream& rin)
 
 string Interpreter::gword(string& s,const string& mark)
 {
-	string t = s.substr(0, s.find_first_of(mark));
-	s.erase(0, s.find_first_of(mark) + mark.length());
+	int length = mark.length();
+	int i;
+	for (i = 0; i < s.length() - length; i++)
+	{
+		string tmp = s.substr(i, length);
+		if (!strcmp(tmp.c_str(),mark.c_str())) break;
+	}
+	string t = s.substr(0, i);
+	s.erase(0, i + mark.length());
 	return t;
 }
 
@@ -270,7 +277,7 @@ bool Interpreter::syntax()
 		tname = gword(s, " ");
 		s.erase(0, 6);
 		
-		cout << "ini s: " << s << endl;
+		//cout << "ini s: " << s << endl;
 		ta = cm->attr(tname);
 		int over = 0;
 		while (1) {
@@ -278,13 +285,13 @@ bool Interpreter::syntax()
 			if (s.find("and") != string::npos)
 			{
 				re = gword(s, " and ");
-				cout << "there is an and" << endl;
+				//cout << "there is an and" << endl;
 			}
 				
 			else { re = gword(s, ";");over = 1; }
 
-			cout << "re: " << re << endl;
-			cout << "s: " << s << endl;
+			//cout << "re: " << re << endl;
+			//cout << "s: " << s << endl;
 
 			string aname = gword(re, " ");int type = check_attr(ta, aname);
 			if (type>1) { cout << aname << " does not exist" << endl;return 0; }

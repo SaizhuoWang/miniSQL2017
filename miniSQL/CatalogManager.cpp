@@ -209,7 +209,13 @@ bool CatalogManager::create_index(const string & iname, const string & tname, co
 bool CatalogManager::find_table(const string & table_name)
 {
 	string filename(table_name + ".tlog");
-	if (bm->FileSize(filename.c_str()) == 0 && (indices->find(table_name) == indices->end()))
+	FILE* fp = fopen(filename.c_str(), "r");
+	if (!fp)
+	{
+		return false;
+	}
+	fclose(fp);
+	if (bm->FileSize(filename.c_str()) == 0 && (tables->find(table_name) == tables->end()))
 		return false;
 	return true;
 }
@@ -217,6 +223,12 @@ bool CatalogManager::find_table(const string & table_name)
 bool CatalogManager::find_index(const string & index_name)
 {
 	string filename(index_name + ".ilog");
+	FILE* fp = fopen(filename.c_str(), "r");
+	if (!fp)
+	{
+		return false;
+	}
+	fclose(fp);
 	if (bm->FileSize(filename) == 0 && (indices->find(index_name) == indices->end()))
 		return false;
 	return true;

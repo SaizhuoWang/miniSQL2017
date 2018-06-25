@@ -6,6 +6,8 @@
 #include <iostream>
 #include <cstring>
 
+extern int offset;
+
 RecordManager::RecordManager(API *parent)
 {
 	this->bm = Utils::GetBufferManager();
@@ -327,12 +329,12 @@ bool RecordManager::delete_blockrecord(Block & current_block, vector<Condition> 
 		{
 			//cout << recordpoint << endl;
 			//delete index of this record
-			api->recordIndexDelete(recordpoint, recordSize, block_id + offset);
+			api->recordIndexDelete(recordpoint, tableName);
 			end_recordpoint = find_lastrecord(tableName, recordSize);
 			//cout << end_recordpoint << endl;
 			//cout << offset << endl;
 			memcpy(recordpoint, end_recordpoint, recordSize);
-			api->recordAddIndex(recordpoint, recordSize, block_id+offset);
+			api->recordAddIndex(recordpoint, tableName, block_id+offset);
 		}
 		if (!record_fitcondition(recordpoint, recordSize, &attributeVector, conditionVector))
 		{
@@ -362,7 +364,7 @@ char * RecordManager::find_lastrecord(string tableName, int recordSize)
 		else if(left_blockspace(*current_block) >= recordSize)
 		{
 			end_recordpoint = get_recordpoint(*current_block, (current_block->byte_used - recordSize));
-			api->recordIndexDelete(end_recordpoint, recordSize, offset + current_block->byte_used);
+			api->recordIndexDelete(end_recordpoint, tableName);
 			current_block->byte_used -= recordSize; //reset the uesd space
 			return end_recordpoint;
 		}
@@ -385,4 +387,44 @@ int RecordManager::typeSizeGet(int type)
 	else
 		length = -type;
 	return length;
+}
+
+index_param RecordManager::find_record(string tableName)
+{
+	string recordFileName = record_filename(tableName);
+	int recordSize = api->get_recordSize(tableName);
+	Block * current_block = bm->FetchBlock(recordFileName, offset);
+	index_param index_need;
+	char * content = new char[recordSize];
+	int all_size = current_block->byte_used;
+	char * contentBegin;
+
+	while (offset + recordSize <= all_size)
+	{
+		//if the block is empty, just return
+		if (all_size == 0)
+		{
+			index_need.r_offset = -1;
+			index_need.r_point = NULL;
+			return index_need;
+		}
+		if (offset + recordSize < all_size)
+		{
+			contentBegin = get_recordpoint(*current_block, offset);
+			memcpy(content, contentBegin, recordSize);
+			index_need.r_offset = offset;
+			index_need.r_point = content;
+			offset += recordSize;
+			return index_need;
+		}
+		else
+		{
+			int res = offset % BLOCK_SIZE;
+			offset += BLOCK_SIZE - res;
+			current_block = bm->FetchBlock(recordFileName, offset);
+			int res2 = all_size % BLOCK_SIZE;
+			all_size += BLOCK_SIZE - res2;
+			all_size += current_block->byte_used;
+		}
+	}
 }

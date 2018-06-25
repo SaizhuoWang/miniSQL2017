@@ -93,3 +93,11 @@ public:
 	bool isright(char* compared, int type);
 
 };
+
+struct index_return
+{
+	char *r_point;
+	int r_offset;
+};
+
+typedef struct index_return index_param;

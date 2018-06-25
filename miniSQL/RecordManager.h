@@ -23,7 +23,7 @@ public:
 
 	bool delete_allrecord(string tableName, vector<Condition> * conditionVector);
 	bool delete_blockrecord(Block & current_block, vector<Condition> * conditionVector, string tableName, int block_offset);
-
+	index_param find_record(string tableName);
 	
 private:
 	bool record_fitcondition(char * recordpoint, int recordSize, vector<Attribute> * attributeVector, vector<Condition> * conditionVector);
