@@ -329,7 +329,7 @@ bool Interpreter::syntax()
 		}
 	}
 
-	else if (!op.compare("quit;")) {
+	else if (!op.compare("quit")) {
 		return 1;
 	}
 	else if (!op.compare("execfile")) {

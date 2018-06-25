@@ -39,7 +39,7 @@ void API::create_index(const string& iname, const string& tname, const string& a
 	bool ii = im->CreateIndex(iname.c_str());
 	if (cc && ii)
 	{
-		struct index_return ir;
+		/*struct index_return ir;
 		while(1){
 			ir = rm->find_record(tname);
 			if (ir.r_offset < 0)break;
@@ -48,7 +48,7 @@ void API::create_index(const string& iname, const string& tname, const string& a
 				string key = gkey(ats, aname, ir.r_point);
 				im->Insert(iname.c_str(), key.c_str(), ir.r_offset);
 			}
-		}
+		}*/
 		cout << "Create " << iname << " on " << tname << " succeed" << endl;
 	}
 		
@@ -139,7 +139,7 @@ void API::recordAddIndex(const char* value, const string& tname, const int& offs
 	for (i = 0;i < vi->size();i++)
 	{
 		string key = gkey(ats, (*vi)[i].attr->name, value);
-		if(im->Insert((*vi)[i].name.c_str(), key.c_str(),offset))
+		/*if(im->Insert((*vi)[i].name.c_str(), key.c_str(),offset))*/
 			cout << "Index '"<< (*vi)[i].name << "' is updated successfully" << endl;	
 	}
 }

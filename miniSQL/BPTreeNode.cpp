@@ -89,7 +89,7 @@ bool BPTreeNode::IsLeaf() const
 
 const char *BPTreeNode::GetKey(int pos) const
 {
-	if (pos > size || pos <= 0)
+	if (pos > size || pos < 0)
 	{
 		cerr << "Get key error: Position " << pos << " out of range." << endl;
 		return NULL;
@@ -99,7 +99,7 @@ const char *BPTreeNode::GetKey(int pos) const
 
 int BPTreeNode::GetPointer(int pos) const
 {
-	if (pos > size || pos <= 0)
+	if (pos > size || pos < 0)
 	{
 		cerr << "Get pointer error: Position " << pos << " out of range." << endl;
 		return NULL;
